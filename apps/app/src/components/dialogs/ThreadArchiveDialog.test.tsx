@@ -36,24 +36,24 @@ describe("ThreadArchiveDialog", () => {
   it("announces the cascade with singular and plural child counts", () => {
     const { view } = renderDialog({ childThreadCount: 1 });
     expect(
-      screen.getByText(/1 subthread will be archived with this thread\./),
+      screen.getByText(/Its 1 subthread will be archived too\./),
     ).toBeTruthy();
 
     view.unmount();
     renderDialog({ childThreadCount: 3 });
     expect(
-      screen.getByText(/3 subthreads will be archived with this thread\./),
+      screen.getByText(/Its 3 subthreads will be archived too\./),
     ).toBeTruthy();
   });
 
-  it("names the total number of threads in the title and action", () => {
+  it("names the single thread in the title and action", () => {
     renderDialog({ childThreadCount: 3 });
 
     expect(
-      screen.getByRole("heading", { name: "Archive 4 threads?" }),
+      screen.getByRole("heading", { name: "Archive thread?" }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "Archive 4 threads" }),
+      screen.getByRole("button", { name: "Archive thread" }),
     ).toBeTruthy();
   });
 
@@ -73,7 +73,7 @@ describe("ThreadArchiveDialog", () => {
   it("focuses the archive action when opened for keyboard confirmation", () => {
     renderDialog();
     expect(document.activeElement).toBe(
-      screen.getByRole("button", { name: "Archive 2 threads" }),
+      screen.getByRole("button", { name: "Archive thread" }),
     );
   });
 
@@ -86,7 +86,7 @@ describe("ThreadArchiveDialog", () => {
 
   it("ignores confirmation while archiving is pending", () => {
     const { onArchive } = renderDialog({ pending: true });
-    fireEvent.click(screen.getByRole("button", { name: "Archive 2 threads" }));
+    fireEvent.click(screen.getByRole("button", { name: "Archive thread" }));
     expect(onArchive).not.toHaveBeenCalled();
   });
 
@@ -99,7 +99,7 @@ describe("ThreadArchiveDialog", () => {
     expect(onArchive).not.toHaveBeenCalled();
     expect(onOpenChange).toHaveBeenCalledWith(false);
 
-    fireEvent.click(screen.getByRole("button", { name: "Archive 3 threads" }));
+    fireEvent.click(screen.getByRole("button", { name: "Archive thread" }));
     expect(onArchive).toHaveBeenCalledWith({ thread, childThreadCount: 2 });
   });
 });

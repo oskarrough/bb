@@ -390,7 +390,7 @@ describe("ThreadActionsProvider archive confirmation", () => {
 
     expect(
       await screen.findByText(
-        /4 subthreads will be archived with this thread\./,
+        /Its 4 subthreads will be archived too\./,
       ),
     ).not.toBeNull();
     expect(sdk.threads.archiveAll).not.toHaveBeenCalled();
@@ -415,7 +415,7 @@ describe("ThreadActionsProvider archive feedback", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Archive" }));
     fireEvent.click(
-      await screen.findByRole("button", { name: "Archive 2 threads" }),
+      await screen.findByRole("button", { name: "Archive thread" }),
     );
 
     await vi.waitFor(() => {
@@ -460,7 +460,7 @@ describe("ThreadActionsProvider archive feedback", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Archive" }));
     fireEvent.click(
-      await screen.findByRole("button", { name: "Archive 2 threads" }),
+      await screen.findByRole("button", { name: "Archive thread" }),
     );
 
     await vi.waitFor(() => {
@@ -497,7 +497,7 @@ describe("ThreadActionsProvider archive feedback", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Archive" }));
     fireEvent.click(
-      await screen.findByRole("button", { name: "Archive 2 threads" }),
+      await screen.findByRole("button", { name: "Archive thread" }),
     );
 
     await vi.waitFor(() => {

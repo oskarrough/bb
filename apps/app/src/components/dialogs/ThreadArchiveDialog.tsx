@@ -68,14 +68,13 @@ export function ThreadArchiveDialogContent({
   onArchive,
 }: ThreadArchiveDialogContentProps) {
   const { childThreadCount } = target;
-  const archivedThreadCount = childThreadCount + 1;
   const active =
     target.thread.status === "starting" ||
     target.thread.status === "active" ||
     target.thread.status === "stopping";
   const sentences = [
     active ? "This will stop current work." : null,
-    `${childThreadCount} ${childThreadCount === 1 ? "subthread" : "subthreads"} will be archived with this thread.`,
+    `Its ${childThreadCount} ${childThreadCount === 1 ? "subthread" : "subthreads"} will be archived too.`,
     "Archived threads stay available and can be unarchived.",
   ].filter((sentence): sentence is string => sentence !== null);
 
@@ -90,7 +89,7 @@ export function ThreadArchiveDialogContent({
       }}
     >
       <DialogHeader>
-        <DialogTitle>Archive {archivedThreadCount} threads?</DialogTitle>
+        <DialogTitle>Archive thread?</DialogTitle>
         <DialogDescription>{sentences.join(" ")}</DialogDescription>
       </DialogHeader>
       <DialogFooter>
@@ -103,7 +102,7 @@ export function ThreadArchiveDialogContent({
           Cancel
         </Button>
         <Button type="submit" disabled={pending}>
-          Archive {archivedThreadCount} threads
+          Archive thread
         </Button>
       </DialogFooter>
     </form>
