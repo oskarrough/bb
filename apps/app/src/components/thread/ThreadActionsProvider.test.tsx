@@ -390,7 +390,7 @@ describe("ThreadActionsProvider archive confirmation", () => {
 
     expect(
       await screen.findByText(
-        /4 child threads will be archived with this thread\./,
+        /4 subthreads will be archived with this thread\./,
       ),
     ).not.toBeNull();
     expect(sdk.threads.archiveAll).not.toHaveBeenCalled();

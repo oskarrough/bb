@@ -75,7 +75,7 @@ export function ThreadArchiveDialogContent({
     target.thread.status === "stopping";
   const sentences = [
     active ? "This will stop current work." : null,
-    `${childThreadCount} child ${childThreadCount === 1 ? "thread" : "threads"} will be archived with this thread.`,
+    `${childThreadCount} ${childThreadCount === 1 ? "subthread" : "subthreads"} will be archived with this thread.`,
     "Archived threads stay available and can be unarchived.",
   ].filter((sentence): sentence is string => sentence !== null);
 

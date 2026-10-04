@@ -36,13 +36,13 @@ describe("ThreadArchiveDialog", () => {
   it("announces the cascade with singular and plural child counts", () => {
     const { view } = renderDialog({ childThreadCount: 1 });
     expect(
-      screen.getByText(/1 child thread will be archived with this thread\./),
+      screen.getByText(/1 subthread will be archived with this thread\./),
     ).toBeTruthy();
 
     view.unmount();
     renderDialog({ childThreadCount: 3 });
     expect(
-      screen.getByText(/3 child threads will be archived with this thread\./),
+      screen.getByText(/3 subthreads will be archived with this thread\./),
     ).toBeTruthy();
   });
 

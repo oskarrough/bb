@@ -103,11 +103,11 @@ export function ParentThreadPicker({
       <PopoverContent
         align="start"
         className="w-72 p-0"
-        mobileTitle="Assign parent thread"
+        mobileTitle="Move under a thread"
       >
-        <Command label="Search parent threads" shouldFilter={false}>
+        <Command label="Search threads" shouldFilter={false}>
           <CommandInput
-            aria-label="Search parent threads"
+            aria-label="Search threads"
             placeholder="Search threads…"
             value={searchQuery}
             onValueChange={setSearchQuery}
@@ -137,7 +137,7 @@ export function ParentThreadPicker({
                     No matching threads.
                   </div>
                 ) : (
-                  <CommandGroup heading="Assign parent thread">
+                  <CommandGroup heading="Move under">
                     {filteredOptions.map((option) => (
                       <CommandItem
                         key={option.value}

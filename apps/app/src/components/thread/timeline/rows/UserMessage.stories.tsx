@@ -249,7 +249,7 @@ const systemChildOutcomeBatchMessage = buildMessage(
 const parentChildSystemMessageFixtures = [
   {
     label: "assigned",
-    hint: "new parent receives the child thread assignment notice",
+    hint: "new parent receives the subthread assignment notice",
     message: buildMessage(
       renderTemplate("systemMessageThreadOwnershipAssigned", {
         threadMention: "@thread:thr_indexer",
@@ -285,7 +285,7 @@ const parentChildSystemMessageFixtures = [
   },
   {
     label: "needs attention",
-    hint: "child thread is blocked on a pending interaction",
+    hint: "subthread is blocked on a pending interaction",
     message: buildMessage(
       renderTemplate("systemMessageChildThreadNeedsAttention", {
         blockerSummary: [
@@ -307,7 +307,7 @@ const parentChildSystemMessageFixtures = [
   },
   {
     label: "completed",
-    hint: "single child thread completion includes its final output excerpt",
+    hint: "single subthread completion includes its final output excerpt",
     message: buildMessage(
       renderTemplate("systemMessageChildThreadOutcomeBatch", {
         updates: [
@@ -329,7 +329,7 @@ const parentChildSystemMessageFixtures = [
   },
   {
     label: "failed",
-    hint: "single child thread failure asks the parent to inspect before deciding next steps",
+    hint: "single subthread failure asks the parent to inspect before deciding next steps",
     message: buildMessage(
       renderTemplate("systemMessageChildThreadOutcomeBatch", {
         updates: [
@@ -351,7 +351,7 @@ const parentChildSystemMessageFixtures = [
   },
   {
     label: "interrupted",
-    hint: "single child thread interruption explains its recorded cause",
+    hint: "single subthread interruption explains its recorded cause",
     message: buildMessage(
       renderTemplate("systemMessageChildThreadOutcomeBatch", {
         updates: [
@@ -373,7 +373,7 @@ const parentChildSystemMessageFixtures = [
   },
   {
     label: "mixed batch",
-    hint: "multiple child thread outcomes collapse into one parent-facing system turn",
+    hint: "multiple subthread outcomes collapse into one parent-facing system turn",
     message: buildMessage(
       renderTemplate("systemMessageChildThreadOutcomeBatch", {
         updates: [

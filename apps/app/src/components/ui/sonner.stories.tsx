@@ -226,7 +226,7 @@ const TOAST_EXAMPLES: readonly ToastExample[] = [
     label: "archive with children",
     source: "ThreadActionsProvider",
     usage: [
-      "Archive includes child threads",
+      "Archive includes subthreads",
       "Long titles truncate to one line",
     ],
     current: {

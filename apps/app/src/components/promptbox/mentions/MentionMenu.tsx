@@ -106,20 +106,23 @@ function getPathSectionLabel(item: PathMentionSuggestion): string {
   return "Workspace";
 }
 
-const THREAD_MENTION_RELATION_LABEL: Record<ThreadMentionRelation, string> = {
-  parent: "parent",
-  child: "child",
-  "same-parent": "same parent",
+const THREAD_MENTION_RELATION_LABEL: Record<
+  ThreadMentionRelation,
+  string | null
+> = {
+  parent: null,
+  child: "subthread",
+  "same-parent": null,
   "same-environment": "same environment",
 };
 
 const THREAD_MENTION_RELATION_COMPACT_LABEL: Record<
   ThreadMentionRelation,
-  string
+  string | null
 > = {
-  parent: "parent",
-  child: "child",
-  "same-parent": "same parent",
+  parent: null,
+  child: "subthread",
+  "same-parent": null,
   "same-environment": "same env",
 };
 
@@ -132,6 +135,9 @@ function threadMentionRelationLabel(
 function ThreadRelationPill({ relation }: { relation: ThreadMentionRelation }) {
   const label = THREAD_MENTION_RELATION_LABEL[relation];
   const compactLabel = THREAD_MENTION_RELATION_COMPACT_LABEL[relation];
+  if (label === null || compactLabel === null) {
+    return null;
+  }
   return (
     <Pill variant="secondary" size="sm">
       {label === compactLabel ? (

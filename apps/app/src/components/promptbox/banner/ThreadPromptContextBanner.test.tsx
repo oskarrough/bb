@@ -413,11 +413,11 @@ describe("ThreadPromptContextBanner", () => {
       </MemoryRouter>,
     );
 
-    expect(markup).toContain('aria-label="Child threads"');
+    expect(markup).toContain('aria-label="Subthreads"');
     expect(markup).toContain(
-      "1 active child thread: Investigate failing checks",
+      "1 active subthread: Investigate failing checks",
     );
-    expect(markup).toContain("Active child thread:");
+    expect(markup).toContain("Active subthread:");
     expect(markup).toContain("Investigate failing checks");
     expect(markup).toContain('data-icon="UserRound"');
     expect(markup).toContain("animate-shine-icon");
@@ -457,7 +457,7 @@ describe("ThreadPromptContextBanner", () => {
     );
 
     expect(markup).toContain(
-      "2 active child threads: Investigate failing checks",
+      "2 active subthreads: Investigate failing checks",
     );
     expect(markup).toContain("+1 more");
   });
@@ -488,7 +488,7 @@ describe("ThreadPromptContextBanner", () => {
       </MemoryRouter>,
     );
 
-    const childCard = screen.getByRole("region", { name: "Child threads" });
+    const childCard = screen.getByRole("region", { name: "Subthreads" });
     const contextCard = screen.getByRole("region", {
       name: "Thread context before sending",
     });
@@ -528,12 +528,12 @@ describe("ThreadPromptContextBanner", () => {
     );
 
     expect(markup).toContain(
-      "1 child thread needs input: Install workspace tools",
+      "1 subthread needs input: Install workspace tools",
     );
     expect(markup).toContain("Needs your input:");
     expect(markup).toContain("Install workspace tools");
     expect(markup).toContain('data-icon="CircleQuestion"');
-    expect(markup).not.toContain("Active child thread:");
+    expect(markup).not.toContain("Active subthread:");
     expect(markup).not.toContain("animate-shine-icon");
   });
 

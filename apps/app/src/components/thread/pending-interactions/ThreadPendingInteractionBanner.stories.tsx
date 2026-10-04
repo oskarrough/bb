@@ -212,7 +212,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         className="grid-cols-1 gap-y-2 px-0 md:grid-cols-[210px_minmax(0,1fr)]"
-        label="command approval from a child thread"
+        label="command approval from a subthread"
         hint="parent composer surfaces the child's permission prompt with a link back to that child"
       >
         <PromptStage>

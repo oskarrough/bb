@@ -282,9 +282,9 @@ const PARENT_SECTION_COPY: Record<
   { verb: string; bodyLead: string; ariaPrefix: string }
 > = {
   parent: {
-    verb: "Parent",
-    bodyLead: "This thread is a child of ",
-    ariaPrefix: "Parent thread",
+    verb: "Subthread of",
+    bodyLead: "This thread is a subthread of ",
+    ariaPrefix: "Subthread of",
   },
   fork: {
     verb: "Forked from",
@@ -642,9 +642,9 @@ function childThreadsLabel(args: {
   pendingCount: number;
 }): string {
   if (args.pendingCount > 0) {
-    return `${args.pendingCount} child ${args.pendingCount === 1 ? "thread needs" : "threads need"} input`;
+    return `${args.pendingCount} ${args.pendingCount === 1 ? "subthread needs" : "subthreads need"} input`;
   }
-  return `${args.count} active child ${args.count === 1 ? "thread" : "threads"}`;
+  return `${args.count} active ${args.count === 1 ? "subthread" : "subthreads"}`;
 }
 
 function ActiveChildThreadsCard({
@@ -679,7 +679,7 @@ function ActiveChildThreadsCard({
   const needsApproval = pendingCount > 0;
   return (
     <PromptStackCard
-      ariaLabel="Child threads"
+      ariaLabel="Subthreads"
       className="overflow-hidden"
       style={{ minHeight: PROMPT_STACK_CARD_ROW_HEIGHT }}
     >
@@ -711,7 +711,7 @@ function ActiveChildThreadsCard({
           />
           <span className="min-w-0 flex-1 truncate text-left">
             <span className="text-muted-foreground">
-              {needsApproval ? "Needs your input: " : "Active child thread: "}
+              {needsApproval ? "Needs your input: " : "Active subthread: "}
             </span>
             <ThreadTitle
               title={primary.title}

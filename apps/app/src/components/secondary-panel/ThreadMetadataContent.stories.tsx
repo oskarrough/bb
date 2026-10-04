@@ -34,7 +34,7 @@ export function Overview() {
         })}
       </StoryRow>
       <StoryRow
-        label="standard, child thread"
+        label="standard, subthread"
         hint="thread.parentThreadId set — selector renders the link form"
       >
         {render({

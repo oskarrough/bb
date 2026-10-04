@@ -136,7 +136,7 @@ export function ParentSelectorRow({
 
   return (
     <DetailRow
-      label={<DetailRowIconLabel icon="UserRound">Parent</DetailRowIconLabel>}
+      label={<DetailRowIconLabel icon="UserRound">Subthread of</DetailRowIconLabel>}
       valueClassName="min-w-0"
     >
       {parentThreadId ? (
@@ -157,7 +157,7 @@ export function ParentSelectorRow({
             )}
           >
             <ThreadTitle
-              title={selectedParentOptionLabel ?? "Parent thread"}
+              title={selectedParentOptionLabel ?? "Thread"}
               tooltip
             />
           </Link>
@@ -170,7 +170,7 @@ export function ParentSelectorRow({
             onClick={() => {
               onAssignParent(null);
             }}
-            aria-label="Clear parent thread"
+            aria-label="Move out of subthreads"
           >
             <Icon name="X" />
           </Button>

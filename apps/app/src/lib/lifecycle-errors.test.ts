@@ -403,8 +403,8 @@ const descriptionCases: DescriptionCase[] = [
       },
     },
     expected: {
-      title: "Parent thread unavailable",
-      body: "That parent thread no longer exists.",
+      title: "Can't move this thread",
+      body: "That thread no longer exists.",
       severity: "error",
     },
   },
@@ -419,8 +419,8 @@ const descriptionCases: DescriptionCase[] = [
       },
     },
     expected: {
-      title: "Parent thread unavailable",
-      body: "Unarchive the parent thread first or choose another parent.",
+      title: "Can't move this thread",
+      body: "Unarchive that thread first, or choose another one.",
       severity: "warning",
     },
   },
@@ -435,8 +435,8 @@ const descriptionCases: DescriptionCase[] = [
       },
     },
     expected: {
-      title: "Parent thread unavailable",
-      body: "That parent thread was deleted.",
+      title: "Can't move this thread",
+      body: "That thread was deleted.",
       severity: "error",
     },
   },
@@ -451,8 +451,8 @@ const descriptionCases: DescriptionCase[] = [
       },
     },
     expected: {
-      title: "Parent thread unavailable",
-      body: "A thread cannot be its own parent.",
+      title: "Can't move this thread",
+      body: "A thread can't be its own subthread.",
       severity: "error",
     },
   },
@@ -467,8 +467,8 @@ const descriptionCases: DescriptionCase[] = [
       },
     },
     expected: {
-      title: "Parent thread unavailable",
-      body: "Choose a thread that is not a child of this thread.",
+      title: "Can't move this thread",
+      body: "Choose a thread that isn't one of this thread's subthreads.",
       severity: "error",
     },
   },
@@ -483,7 +483,7 @@ const descriptionCases: DescriptionCase[] = [
       },
     },
     expected: {
-      title: "Parent thread unavailable",
+      title: "Can't move this thread",
       body: "Thread nesting is limited to 4 levels.",
       severity: "error",
     },

@@ -340,7 +340,7 @@ const featureBranchMergeBase: ContextBannerMergeBaseConfig = {
 };
 
 const parentThreadFixture: ThreadPromptParentThreadSection = {
-  parentThreadTitle: "Parent thread",
+  parentThreadTitle: "Add keyboard shortcuts to the review view",
   href: "/projects/proj-1/threads/thr_parent_demo",
   relationship: "parent",
 };
@@ -727,7 +727,7 @@ export function Overview() {
         <Row archived={archivedFixture} mergeBase={null} />
       </StoryRow>
       <StoryRow
-        label="archived + child thread"
+        label="archived + subthread"
         hint="archived row plus parent context; action is hidden because archived is not the only segment"
       >
         <Row
@@ -760,7 +760,7 @@ export function Overview() {
         <Row environmentGone={restorableEnvironmentFixture} mergeBase={null} />
       </StoryRow>
       <StoryRow
-        label="environment archived + child thread"
+        label="environment archived + subthread"
         hint="archived-environment row plus parent context"
       >
         <Row
@@ -780,7 +780,7 @@ export function Overview() {
           mergeBase={null}
         />
       </StoryRow>
-      <StoryRow label="child thread (alone)" hint="inline parent link">
+      <StoryRow label="subthread (alone)" hint="inline link to the thread it belongs to">
         <Row parentThread={parentThreadFixture} mergeBase={null} />
       </StoryRow>
       <StoryRow
@@ -839,7 +839,7 @@ export function Overview() {
         />
       </StoryRow>
       <StoryRow
-        label="child thread + uncommitted"
+        label="subthread + uncommitted"
         hint="with other context, the parent-thread segment collapses to an icon-only toggle"
       >
         <Row section={uncommittedSection} parentThread={parentThreadFixture} />

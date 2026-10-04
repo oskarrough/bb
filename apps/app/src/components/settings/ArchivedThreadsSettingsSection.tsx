@@ -39,8 +39,8 @@ const KIND_OPTIONS: ReadonlyArray<{
   value: ArchivedThreadsKindFilter;
 }> = [
   { label: "All threads", value: "all" },
-  { label: "Root threads", value: "root" },
-  { label: "Child threads", value: "child" },
+  { label: "Threads", value: "root" },
+  { label: "Subthreads", value: "child" },
 ];
 
 interface ArchiveFilterMenuProps<T extends string> {
@@ -264,7 +264,7 @@ export function ArchivedThreadsSettingsSection() {
                         <ThreadTitle title={getThreadDisplayTitle(thread)} />
                         {thread.parentThreadId !== null ? (
                           <Pill variant="outline" className="shrink-0">
-                            child
+                            subthread
                           </Pill>
                         ) : null}
                       </span>

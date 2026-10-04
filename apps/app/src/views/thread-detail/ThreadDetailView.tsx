@@ -2532,7 +2532,7 @@ function ThreadDetailViewInternal(
         />
       )}
       childPillLabel={
-        isSideChatThread ? "side chat" : parentThreadId ? "child" : null
+        isSideChatThread ? "side chat" : parentThreadId ? "subthread" : null
       }
       isSecondaryPanelOpen={isSecondaryPanelOpen}
       onClosePane={onRequestClose ?? undefined}

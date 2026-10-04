@@ -51,7 +51,7 @@ export function ThreadDeleteDialogContent({
 }: ThreadDeleteDialogContentProps) {
   const label = "thread";
   const sentences = [
-    target.childThreadCount ? "Child threads will be deleted." : null,
+    target.childThreadCount ? "Its subthreads will be deleted." : null,
     "This action cannot be undone.",
   ].filter((part): part is string => part !== null);
 

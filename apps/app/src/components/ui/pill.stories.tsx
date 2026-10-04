@@ -40,8 +40,8 @@ export function Overview() {
         </StoryRow>
       </StoryCard>
       <StoryCard>
-        <StoryRow label="child" hint="non-fork child thread">
-          <Pill variant="outline">child</Pill>
+        <StoryRow label="child" hint="non-fork subthread">
+          <Pill variant="outline">subthread</Pill>
         </StoryRow>
         <StoryRow label="fork" hint="forked thread">
           <Pill variant="outline">fork</Pill>
