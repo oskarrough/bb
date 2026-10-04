@@ -266,7 +266,7 @@ export function ArchivedThreadsSettingsSection() {
                           <Pill variant="outline" className="shrink-0">
                             <span className="inline-flex items-center gap-1 align-middle">
                               <Icon
-                                name="CornerDownRight"
+                                name="Subthread"
                                 className="size-3"
                                 aria-hidden
                               />

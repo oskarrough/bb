@@ -185,7 +185,7 @@ export function ThreadDetailHeader({
         <Pill variant="outline" size="sm">
           <span className="inline-flex items-center gap-1 align-middle">
             {childPillLabel === "subthread" ? (
-              <Icon name="CornerDownRight" className="size-3" aria-hidden />
+              <Icon name="Subthread" className="size-3" aria-hidden />
             ) : null}
             {childPillLabel}
           </span>
