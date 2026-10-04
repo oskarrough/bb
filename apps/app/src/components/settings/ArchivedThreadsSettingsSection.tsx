@@ -264,7 +264,14 @@ export function ArchivedThreadsSettingsSection() {
                         <ThreadTitle title={getThreadDisplayTitle(thread)} />
                         {thread.parentThreadId !== null ? (
                           <Pill variant="outline" className="shrink-0">
-                            subthread
+                            <span className="inline-flex items-center gap-1 align-middle">
+                              <Icon
+                                name="CornerDownRight"
+                                className="size-3"
+                                aria-hidden
+                              />
+                              subthread
+                            </span>
                           </Pill>
                         ) : null}
                       </span>

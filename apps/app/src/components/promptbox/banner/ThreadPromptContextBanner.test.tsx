@@ -417,9 +417,9 @@ describe("ThreadPromptContextBanner", () => {
     expect(markup).toContain(
       "1 active subthread: Investigate failing checks",
     );
-    expect(markup).toContain("Active subthread:");
+    expect(markup).not.toContain("Active subthread:");
     expect(markup).toContain("Investigate failing checks");
-    expect(markup).toContain('data-icon="UserRound"');
+    expect(markup).toContain('data-icon="CornerDownRight"');
     expect(markup).toContain("animate-shine-icon");
     expect(markup).not.toContain("animate-shine font-medium");
   });

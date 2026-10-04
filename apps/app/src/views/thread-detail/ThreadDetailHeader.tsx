@@ -183,7 +183,12 @@ export function ThreadDetailHeader({
       </div>
       {childPillLabel ? (
         <Pill variant="outline" size="sm">
-          {childPillLabel}
+          <span className="inline-flex items-center gap-1 align-middle">
+            {childPillLabel === "subthread" ? (
+              <Icon name="CornerDownRight" className="size-3" aria-hidden />
+            ) : null}
+            {childPillLabel}
+          </span>
         </Pill>
       ) : null}
       {actionsMenu == null ? null : (

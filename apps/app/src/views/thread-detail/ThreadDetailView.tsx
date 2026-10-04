@@ -901,7 +901,7 @@ function ThreadDetailViewInternal(
   const markThreadRead = useMarkThreadRead();
   const updateEnvironment = useUpdateEnvironment();
   const updateThread = useUpdateThread({
-    errorMessage: "Failed to assign parent thread.",
+    errorMessage: "Failed to move the thread.",
   });
   const createTerminal = useCreateThreadTerminal();
   const closeTerminal = useCloseThreadTerminal();

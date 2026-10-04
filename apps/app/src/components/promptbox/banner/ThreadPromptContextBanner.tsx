@@ -302,7 +302,7 @@ const PARENT_SECTION_ICON: Record<
   ThreadPromptParentThreadSection["relationship"],
   IconName
 > = {
-  parent: "UserRound",
+  parent: "CornerDownRight",
   fork: "Fork",
   "side-chat": "SideChat",
 };
@@ -701,7 +701,7 @@ function ActiveChildThreadsCard({
           }
         >
           <Icon
-            name={needsApproval ? "CircleQuestion" : "UserRound"}
+            name={needsApproval ? "CircleQuestion" : "CornerDownRight"}
             className={
               needsApproval
                 ? "size-3.5 shrink-0 text-muted-foreground/75"
@@ -710,9 +710,9 @@ function ActiveChildThreadsCard({
             aria-hidden="true"
           />
           <span className="min-w-0 flex-1 truncate text-left">
-            <span className="text-muted-foreground">
-              {needsApproval ? "Needs your input: " : "Active subthread: "}
-            </span>
+            {needsApproval ? (
+              <span className="text-muted-foreground">Needs your input: </span>
+            ) : null}
             <ThreadTitle
               title={primary.title}
               className="font-medium text-foreground/80"
