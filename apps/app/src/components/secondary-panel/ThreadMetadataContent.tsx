@@ -783,22 +783,26 @@ function ThreadCommitListItem({
         "rounded px-1 transition-colors has-[[data-commit-subject]:hover]:bg-state-hover",
       )}
     >
-      <button
-        type="button"
-        aria-label={`Copy commit ${shortSha} SHA`}
-        title="Copy SHA"
-        className="group/sha justify-self-start text-xs leading-5"
-        onClick={() => {
-          void copyToClipboardWithToast(commit.sha, {
-            successMessage: "Commit SHA copied",
-            errorMessage: "Failed to copy commit SHA",
-          });
-        }}
-      >
-        <code className="rounded bg-muted/70 px-1.5 py-0.5 font-mono transition-colors group-hover/sha:bg-muted">
-          {shortSha}
-        </code>
-      </button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={`Copy commit ${shortSha} SHA`}
+            className="group/sha justify-self-start text-xs leading-5"
+            onClick={() => {
+              void copyToClipboardWithToast(commit.sha, {
+                successMessage: "Commit SHA copied",
+                errorMessage: "Failed to copy commit SHA",
+              });
+            }}
+          >
+            <code className="rounded bg-muted/70 px-1.5 py-0.5 font-mono transition-colors group-hover/sha:bg-muted">
+              {shortSha}
+            </code>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>Copy SHA</TooltipContent>
+      </Tooltip>
       {onCommitClick ? (
         <button
           type="button"
