@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/detail-card.js";
 import { CHROME_SECTION_LABEL_CLASS } from "@bb/shared-ui/chrome-style-tokens";
 import { useCreateThreadInEnvironment } from "@/hooks/useCreateThreadInEnvironment";
-import { Icon, type IconName } from "@bb/shared-ui/icon";
+import { Icon } from "@bb/shared-ui/icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@bb/shared-ui/tooltip";
 import {
   BranchPicker,
@@ -67,7 +67,7 @@ import {
 } from "@/components/workspace/workspace-change-summary";
 import { getGitStatusDisplay } from "@/components/workspace/workspace-status";
 import { useUnarchiveThread } from "../../hooks/mutations/thread-state-mutations";
-import { useChildThreads, useThreads } from "@/hooks/queries/thread-queries";
+import { useThreads } from "@/hooks/queries/thread-queries";
 import { formatRelativeTime } from "@/lib/relative-time";
 import { buildParentSelectorOptions } from "@/views/thread-detail/threadParentSelectorOptions";
 import { getThreadRoutePath } from "@/lib/route-paths";
@@ -82,13 +82,6 @@ import { PullRequestStateIcon } from "@/components/pull-request/PullRequestStatu
 import { GithubFaviconIcon } from "@/components/pull-request/GithubFaviconIcon";
 import { useUrlAnchorClickHandler } from "@/lib/url-open-routing";
 import { ParentThreadPicker } from "@/components/pickers/ParentThreadPicker";
-
-const THREAD_LINK_CLASS_NAME = cn(
-  "block min-w-0 text-foreground no-underline transition-[text-decoration-color] duration-150 hover:underline hover:underline-offset-2",
-  COARSE_POINTER_TEXT_SM_CLASS,
-);
-
-const EMPTY_RELATED_THREADS: readonly ThreadListEntry[] = [];
 
 const INFO_SECTION_DIVIDER_CLASS = "mt-3 border-t border-border pt-2.5";
 
@@ -164,7 +157,10 @@ export function ParentSelectorRow({
               projectId: parentThreadProjectId ?? projectId,
               threadId: parentThreadId,
             })}
-            className={THREAD_LINK_CLASS_NAME}
+            className={cn(
+              "block min-w-0 text-foreground no-underline transition-[text-decoration-color] duration-150 hover:underline hover:underline-offset-2",
+              COARSE_POINTER_TEXT_SM_CLASS,
+            )}
           >
             <ThreadTitle
               title={selectedParentOptionLabel ?? "Thread"}
@@ -204,84 +200,41 @@ export function ParentSelectorRow({
   );
 }
 
-interface RelatedThreads {
-  subthreads: readonly ThreadListEntry[];
-  siblingSubthreads: readonly ThreadListEntry[];
-  forks: readonly ThreadListEntry[];
+interface ForksRowProps {
+  thread: Thread;
+  projectId: string;
 }
 
-function useRelatedThreads(thread: Thread): RelatedThreads {
-  const parentThreadId = thread.parentThreadId ?? undefined;
-  const subthreadsQuery = useChildThreads({
-    enabled: true,
-    parentThreadId: thread.id,
-  });
-  const parentSubthreadsQuery = useChildThreads({
-    enabled: parentThreadId !== undefined,
-    parentThreadId,
-  });
+function ForksRow({ thread, projectId }: ForksRowProps) {
   const forksQuery = useThreads({
     projectId: thread.projectId,
     sourceThreadId: thread.id,
     originKind: "fork",
     archived: false,
   });
-  const parentSubthreads = parentSubthreadsQuery.data;
-  const siblingSubthreads = useMemo(
-    () =>
-      parentSubthreads?.filter((sibling) => sibling.id !== thread.id) ??
-      EMPTY_RELATED_THREADS,
-    [parentSubthreads, thread.id],
-  );
-  return {
-    subthreads: subthreadsQuery.data ?? EMPTY_RELATED_THREADS,
-    siblingSubthreads,
-    forks: forksQuery.data ?? EMPTY_RELATED_THREADS,
-  };
-}
-
-function ThreadLinkList({ threads }: { threads: readonly ThreadListEntry[] }) {
-  return (
-    <TruncatedList
-      items={threads}
-      getKey={(relatedThread) => relatedThread.id}
-      renderItem={(relatedThread) => (
-        <Link
-          to={getThreadRoutePath({
-            projectId: relatedThread.projectId,
-            threadId: relatedThread.id,
-          })}
-          className={THREAD_LINK_CLASS_NAME}
-        >
-          <ThreadTitle title={getThreadDisplayTitle(relatedThread)} tooltip />
-        </Link>
-      )}
-    />
-  );
-}
-
-interface RelatedThreadsRowProps {
-  icon: IconName;
-  label: string;
-  threads: readonly ThreadListEntry[];
-}
-
-export function RelatedThreadsRow({
-  icon,
-  label,
-  threads,
-}: RelatedThreadsRowProps) {
-  if (threads.length === 0) {
+  const forks = forksQuery.data ?? [];
+  if (forks.length === 0) {
     return null;
   }
 
   return (
     <DetailRow
-      label={<DetailRowIconLabel icon={icon}>{label}</DetailRowIconLabel>}
+      label={<DetailRowIconLabel icon="Fork">Forks</DetailRowIconLabel>}
       align="start"
       valueClassName="min-w-0"
     >
-      <ThreadLinkList threads={threads} />
+      <TruncatedList
+        items={forks}
+        getKey={(fork) => fork.id}
+        renderItem={(fork) => (
+          <Link
+            to={getThreadRoutePath({ projectId, threadId: fork.id })}
+            className="block min-w-0 text-xs text-foreground no-underline transition-[text-decoration-color] duration-150 hover:underline hover:underline-offset-2"
+          >
+            <ThreadTitle title={getThreadDisplayTitle(fork)} tooltip />
+          </Link>
+        )}
+      />
     </DetailRow>
   );
 }
@@ -1096,8 +1049,7 @@ export function ThreadMetadataCard({ children }: DetailCardWrapperProps) {
   return (
     <DetailCard
       appearance="flat"
-      labelWidth="7.5rem"
-      className="transient-scrollbar [--change-list-marker-width:var(--detail-label-width)] min-h-0 flex-1 gap-1.5 overflow-x-hidden overflow-y-auto px-4 py-3 max-md:gap-0 max-md:py-1 max-md:[&>div]:min-h-10 max-md:[&>div:not(.items-center)]:pt-2.5"
+      className="transient-scrollbar [--change-list-marker-width:var(--detail-label-width)] min-h-0 flex-1 gap-1.5 overflow-x-hidden overflow-y-auto px-4 py-3 max-md:gap-0 max-md:py-1 max-md:[--detail-label-width:7.5rem] max-md:[&>div]:min-h-10 max-md:[&>div:not(.items-center)]:pt-2.5"
       onScroll={handleScroll}
     >
       {children}
@@ -1140,7 +1092,6 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
     onCommitClick,
   } = props;
 
-  const { subthreads, siblingSubthreads, forks } = useRelatedThreads(thread);
   const isHostActive =
     environment === null || environment.hostLifecycle === "active";
   const hasCommittedWork =
@@ -1165,17 +1116,7 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
         onParentSelectorOpenChange={onParentSelectorOpenChange}
         onRetryParentThreads={onRetryParentThreads}
       />
-      <RelatedThreadsRow
-        icon="Subthread"
-        label="Other subthreads"
-        threads={siblingSubthreads}
-      />
-      <RelatedThreadsRow
-        icon="Subthread"
-        label="Subthreads"
-        threads={subthreads}
-      />
-      <RelatedThreadsRow icon="Fork" label="Forks" threads={forks} />
+      <ForksRow thread={thread} projectId={projectId} />
       <ProjectRow projectId={projectId} />
       <EnvironmentRow
         thread={thread}

@@ -59,7 +59,6 @@ const { useThreadsMock } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/hooks/queries/thread-queries", () => ({
-  useChildThreads: () => ({ data: [] }),
   useThreads: useThreadsMock,
 }));
 
