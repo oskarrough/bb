@@ -14,16 +14,20 @@ export type WorkspaceChangedFile =
 
 type WorkspaceChangedFileClickHandler = (file: WorkspaceChangedFile) => void;
 
+export type WorkspaceFileStatusLabel = "letter" | "word";
+
 interface WorkspaceChangesListProps {
   files: readonly WorkspaceChangedFile[];
   className?: string;
   onFileClick?: WorkspaceChangedFileClickHandler;
   limit?: number;
+  statusLabel?: WorkspaceFileStatusLabel;
 }
 
 interface WorkspaceChangesListItemProps {
   file: WorkspaceChangedFile;
   onFileClick?: WorkspaceChangedFileClickHandler;
+  statusLabel: WorkspaceFileStatusLabel;
 }
 
 export const WORKSPACE_CHANGE_ROW_CLASS =
@@ -42,15 +46,22 @@ function fileKey(file: WorkspaceChangedFile): string {
 function WorkspaceChangesListItem({
   file,
   onFileClick,
+  statusLabel,
 }: WorkspaceChangesListItemProps) {
   const rowContent = (
     <>
-      <span
-        className="justify-self-start text-xs leading-5 text-muted-foreground opacity-70"
-        title={describeWorkspaceFileStatus(file.status)}
-      >
-        {formatWorkspaceFileStatus(file.status)}
-      </span>
+      {statusLabel === "word" ? (
+        <span className="text-xs leading-5 text-muted-foreground opacity-70">
+          {describeWorkspaceFileStatus(file.status)}
+        </span>
+      ) : (
+        <span
+          className="justify-self-start text-xs leading-5 text-muted-foreground opacity-70"
+          title={describeWorkspaceFileStatus(file.status)}
+        >
+          {formatWorkspaceFileStatus(file.status)}
+        </span>
+      )}
       <FilePathLink
         path={file.path}
         className={cn(
@@ -93,6 +104,7 @@ export function WorkspaceChangesList({
   className = "max-h-32",
   onFileClick,
   limit,
+  statusLabel = "letter",
 }: WorkspaceChangesListProps) {
   if (!files || files.length === 0) {
     return <EmptyState message="No changed files detected." />;
@@ -105,7 +117,11 @@ export function WorkspaceChangesList({
         getKey={fileKey}
         limit={limit}
         renderItem={(file) => (
-          <WorkspaceChangesListItem file={file} onFileClick={onFileClick} />
+          <WorkspaceChangesListItem
+            file={file}
+            onFileClick={onFileClick}
+            statusLabel={statusLabel}
+          />
         )}
       />
     );
@@ -121,7 +137,11 @@ export function WorkspaceChangesList({
     <ul className={cn("space-y-1 overflow-auto", className)}>
       {visibleFiles.map((file) => (
         <li key={fileKey(file)}>
-          <WorkspaceChangesListItem file={file} onFileClick={onFileClick} />
+          <WorkspaceChangesListItem
+            file={file}
+            onFileClick={onFileClick}
+            statusLabel={statusLabel}
+          />
         </li>
       ))}
       {hiddenFileCount > 0 ? (

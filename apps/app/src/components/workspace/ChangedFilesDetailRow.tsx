@@ -8,7 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@bb/shared-ui/dropdown-menu";
 import { Icon } from "@bb/shared-ui/icon";
-import { WorkspaceChangesList } from "@/components/thread/WorkspaceChangesList";
+import {
+  WorkspaceChangesList,
+  type WorkspaceFileStatusLabel,
+} from "@/components/thread/WorkspaceChangesList";
 import { cn } from "@bb/shared-ui/lib/utils";
 import {
   renderChangeSummaryParts,
@@ -25,6 +28,7 @@ interface ChangedFilesDetailRowProps {
   rowValueClassName?: string;
   labelClassName?: string;
   limit?: number;
+  statusLabel?: WorkspaceFileStatusLabel;
 }
 
 export function ChangedFilesDetailRow({
@@ -35,6 +39,7 @@ export function ChangedFilesDetailRow({
   rowValueClassName,
   labelClassName,
   limit,
+  statusLabel,
 }: ChangedFilesDetailRowProps) {
   const [selectedKind, setSelectedKind] = useState<
     WorkspaceChangedFilesSection["kind"] | null
@@ -49,16 +54,14 @@ export function ChangedFilesDetailRow({
   const hasMultipleBuckets = sections.length > 1;
 
   const summary = renderChangeSummaryParts(tally);
-  const aggregate = (
-    <>
+  const aggregate =
+    summary.lines === null ? (
       <span className="min-w-0 truncate text-muted-foreground">
         {summary.files}
       </span>
-      {summary.lines === null ? null : (
-        <span className="ml-auto shrink-0">{summary.lines}</span>
-      )}
-    </>
-  );
+    ) : (
+      <span className="ml-auto shrink-0">{summary.lines}</span>
+    );
 
   const label = hasMultipleBuckets ? (
     <span className="flex w-full items-baseline gap-x-3">
@@ -124,6 +127,7 @@ export function ChangedFilesDetailRow({
         files={activeSection.files}
         className={listClassName}
         limit={limit}
+        statusLabel={statusLabel}
         onFileClick={
           onFileClick
             ? (file) => onFileClick({ file, section: activeSection })

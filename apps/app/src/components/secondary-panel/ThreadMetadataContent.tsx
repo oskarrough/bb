@@ -875,6 +875,7 @@ export function ChangedFilesRow({
       labelClassName={CHROME_SECTION_LABEL_CLASS}
       rowValueClassName="-mx-1"
       limit={5}
+      statusLabel="word"
     />
   );
 }
