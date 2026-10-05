@@ -709,6 +709,8 @@ export function MergeBaseRow({
   );
 }
 
+const BRANCH_COMPARISON_SUMMARY_PATTERN = /^\d+ (ahead|behind)\b/;
+
 interface GitStatusRowProps {
   thread: Thread;
   environment: Environment | null;
@@ -755,9 +757,9 @@ export function GitStatusRow({
   });
   const labelClass =
     display.label === "Dirty" ? "text-destructive" : "text-foreground";
-  const summaryRepeatsLabel = display.summary
-    .toLowerCase()
-    .includes(display.label.toLowerCase());
+  const summaryRepeatsLabel =
+    (display.label === "Ahead" || display.label === "Behind") &&
+    BRANCH_COMPARISON_SUMMARY_PATTERN.test(display.summary);
 
   return (
     <DetailRow
