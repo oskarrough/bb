@@ -90,6 +90,8 @@ const THREAD_LINK_CLASS_NAME = cn(
 
 const EMPTY_RELATED_THREADS: readonly ThreadListEntry[] = [];
 
+const INFO_SECTION_DIVIDER_CLASS = "mt-3 border-t border-border pt-2.5";
+
 interface ParentSelectorRowProps {
   thread: Thread;
   projectId: string;
@@ -946,9 +948,12 @@ export function ThreadStorageRow({
   return (
     <DetailRow
       orientation="vertical"
-      className="mt-3 min-h-32 flex-1"
+      className={cn(INFO_SECTION_DIVIDER_CLASS, "min-h-32 flex-1")}
       valueClassName="min-h-0 flex-1 overflow-hidden"
-      labelClassName="flex items-center justify-between gap-2"
+      labelClassName={cn(
+        CHROME_SECTION_LABEL_CLASS,
+        "flex items-center justify-between gap-2",
+      )}
       label={
         <>
           <span>Thread storage</span>
@@ -1214,7 +1219,7 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
       <PullRequestRow pullRequest={pullRequest} />
       <ArchivedRow thread={thread} />
       {hasCommittedWork ? (
-        <div className="mt-3 flex flex-col gap-3 border-t border-border pt-2.5">
+        <div className={cn(INFO_SECTION_DIVIDER_CLASS, "flex flex-col gap-3")}>
           <ThreadCommitsRow
             workspaceStatus={workspaceStatus}
             onCommitClick={onCommitClick}
