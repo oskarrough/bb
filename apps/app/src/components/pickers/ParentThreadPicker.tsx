@@ -103,7 +103,7 @@ export function ParentThreadPicker({
       <PopoverContent
         align="start"
         className="w-72 p-0"
-        mobileTitle="Move under a thread"
+        mobileTitle="Subthread of"
       >
         <Command label="Search threads" shouldFilter={false}>
           <CommandInput
@@ -137,7 +137,7 @@ export function ParentThreadPicker({
                     No matching threads.
                   </div>
                 ) : (
-                  <CommandGroup heading="Move under">
+                  <CommandGroup>
                     {filteredOptions.map((option) => (
                       <CommandItem
                         key={option.value}
