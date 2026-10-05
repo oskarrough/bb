@@ -12,6 +12,7 @@ import {
   applyThreadPinStateResult,
   applyThreadReadStateResult,
   applyThreadUpdateResult,
+  archiveCachedThreadDetail,
   beginArchiveThreadAndChildrenTransaction,
   beginDeleteThreadTransaction,
   beginPinThreadTransaction,
@@ -274,11 +275,16 @@ export function useArchiveThreadAndChildren() {
             summary.unarchivedDescendantCount,
           );
         }
+        archiveCachedThreadDetail({ queryClient, threadId: id });
       }
       return sdk.threads.archiveAll({ threadId: id });
     },
-    onMutate: async ({ id }): Promise<ArchiveThreadsTransaction> =>
+    onMutate: async ({
+      id,
+      childThreadsConfirmed,
+    }): Promise<ArchiveThreadsTransaction> =>
       beginArchiveThreadAndChildrenTransaction({
+        childThreadsConfirmed,
         queryClient,
         threadId: id,
       }),

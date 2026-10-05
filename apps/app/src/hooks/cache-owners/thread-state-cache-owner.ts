@@ -92,11 +92,13 @@ interface RollbackThreadListMutationTransactionArgs extends ThreadIdCacheArgs {
 }
 
 interface ArchiveThreadAndChildrenTransactionArgs {
+  childThreadsConfirmed: boolean;
   queryClient: QueryClient;
   threadId: string;
 }
 
 interface ArchiveMatchingThreadsTransactionArgs {
+  archiveThreadDetails: boolean;
   matchesThread: (thread: ThreadListEntry) => boolean;
   queryClient: QueryClient;
 }
@@ -672,6 +674,7 @@ export function beginUnarchiveThreadTransaction({
 }
 
 async function beginArchiveMatchingThreadsTransaction({
+  archiveThreadDetails,
   matchesThread,
   queryClient,
 }: ArchiveMatchingThreadsTransactionArgs): Promise<ArchiveThreadsTransaction> {
@@ -695,10 +698,12 @@ async function beginArchiveMatchingThreadsTransaction({
     threadIds: archivedThreadIds,
   });
 
-  optimisticallyArchiveThreads({
-    queryClient,
-    threadIds: archivedThreadIds,
-  });
+  if (archiveThreadDetails) {
+    optimisticallyArchiveThreads({
+      queryClient,
+      threadIds: archivedThreadIds,
+    });
+  }
   removeLiveThreadsFromCachedLists({
     matchesThread,
     queryClient,
@@ -713,16 +718,25 @@ async function beginArchiveMatchingThreadsTransaction({
 }
 
 export async function beginArchiveThreadAndChildrenTransaction({
+  childThreadsConfirmed,
   queryClient,
   threadId,
 }: ArchiveThreadAndChildrenTransactionArgs): Promise<ArchiveThreadsTransaction> {
   await queryClient.cancelQueries({ queryKey: threadsQueryKey() });
   await queryClient.cancelQueries({ queryKey: sidebarNavigationQueryKey() });
   return beginArchiveMatchingThreadsTransaction({
+    archiveThreadDetails: childThreadsConfirmed,
     matchesThread: (thread) =>
       thread.id === threadId || thread.parentThreadId === threadId,
     queryClient,
   });
+}
+
+export function archiveCachedThreadDetail({
+  queryClient,
+  threadId,
+}: ThreadIdCacheArgs): void {
+  optimisticallyArchiveThreads({ queryClient, threadIds: [threadId] });
 }
 
 export function rollbackArchiveThreadsTransaction({

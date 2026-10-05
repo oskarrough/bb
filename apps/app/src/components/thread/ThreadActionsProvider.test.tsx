@@ -13,6 +13,7 @@ import {
 } from "@/test/fixtures/projects";
 import {
   sidebarNavigationQueryKey,
+  threadQueryKey,
   threadListQueryKey,
 } from "@/hooks/queries/query-keys";
 import { getCachedSidebarNavigationThreads } from "@/hooks/cache-owners/query-cache";
@@ -291,6 +292,61 @@ describe("ThreadActionsProvider archive confirmation", () => {
       }
     },
   );
+
+  it("keeps the open thread unarchived until the child check passes", async () => {
+    let resolveSummary!: (summary: {
+      nonDeletedChildCount: number;
+      unarchivedDescendantCount: number;
+    }) => void;
+    vi.mocked(sdk.threads.childSummary).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveSummary = resolve;
+        }),
+    );
+    const thread = makeThreadListEntry(makeThread());
+    queryClient.setQueryData(threadQueryKey(thread.id), thread);
+    const cachedArchivedAt = () =>
+      queryClient.getQueryData<Thread>(threadQueryKey(thread.id))?.archivedAt;
+    renderProvider(<ArchiveButton thread={thread} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Archive" }));
+    await vi.waitFor(() =>
+      expect(sdk.threads.childSummary).toHaveBeenCalled(),
+    );
+    expect(cachedArchivedAt()).toBeNull();
+
+    resolveSummary({ nonDeletedChildCount: 1, unarchivedDescendantCount: 1 });
+    await screen.findByRole("button", { name: "Cancel" });
+    expect(cachedArchivedAt()).toBeNull();
+  });
+
+  it("archives the open thread once the child check passes", async () => {
+    vi.mocked(sdk.threads.childSummary).mockResolvedValueOnce({
+      nonDeletedChildCount: 0,
+      unarchivedDescendantCount: 0,
+    });
+    let resolveArchive!: (response: {
+      archivedThreadIds: string[];
+      ok: true;
+    }) => void;
+    vi.mocked(sdk.threads.archiveAll).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveArchive = resolve;
+        }),
+    );
+    const thread = makeThreadListEntry(makeThread());
+    queryClient.setQueryData(threadQueryKey(thread.id), thread);
+    renderProvider(<ArchiveButton thread={thread} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Archive" }));
+    await vi.waitFor(() => expect(sdk.threads.archiveAll).toHaveBeenCalled());
+    expect(
+      queryClient.getQueryData<Thread>(threadQueryKey(thread.id))?.archivedAt,
+    ).not.toBeNull();
+    resolveArchive({ archivedThreadIds: [thread.id], ok: true });
+  });
 
   it("does not restore another archived row when a delayed child check requires confirmation", async () => {
     let resolveSummary!: (summary: {
