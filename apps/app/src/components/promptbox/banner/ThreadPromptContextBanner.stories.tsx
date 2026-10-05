@@ -728,7 +728,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="archived + subthread"
-        hint="archived row plus Subthread of context; action is hidden because archived is not the only segment"
+        hint="archived row plus parent context; action is hidden because archived is not the only segment"
       >
         <Row
           archived={archivedFixture}
@@ -761,7 +761,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="environment archived + subthread"
-        hint="archived-environment row plus Subthread of context"
+        hint="archived-environment row plus parent context"
       >
         <Row
           environmentGone={destroyedEnvironmentFixture}
@@ -840,7 +840,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="subthread + uncommitted"
-        hint="with other context, the Subthread of segment collapses to an icon-only toggle"
+        hint="with other context, the parent segment collapses to an icon-only toggle"
       >
         <Row section={uncommittedSection} parentThread={parentThreadFixture} />
       </StoryRow>

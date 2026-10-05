@@ -283,10 +283,10 @@ const PARENT_SECTION_COPY: Record<
   { verb: string; bodyLead: string; bodyEnd: string; ariaPrefix: string }
 > = {
   parent: {
-    verb: "Subthread of",
-    bodyLead: "Subthread of ",
+    verb: "Parent",
+    bodyLead: "Parent: ",
     bodyEnd: "",
-    ariaPrefix: "Subthread of",
+    ariaPrefix: "Parent",
   },
   fork: {
     verb: "Forked from",
