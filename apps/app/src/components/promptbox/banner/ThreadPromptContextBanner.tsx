@@ -284,7 +284,7 @@ const PARENT_SECTION_COPY: Record<
 > = {
   parent: {
     verb: "Subthread of",
-    bodyLead: "Subthread of: ",
+    bodyLead: "Subthread of ",
     bodyEnd: "",
     ariaPrefix: "Subthread of",
   },

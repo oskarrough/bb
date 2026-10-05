@@ -51,17 +51,24 @@ export function ThreadDeleteDialogContent({
   onDelete,
 }: ThreadDeleteDialogContentProps) {
   const label = "thread";
-  const sentences = [
-    target.childThreadCount
-      ? `Its ${formatSubthreadCount(target.childThreadCount)} will be deleted too.`
-      : null,
-    "This action cannot be undone.",
-  ].filter((part): part is string => part !== null);
 
   return (
     <ConfirmDeleteDialogContent
       title={`Delete ${label}?`}
-      description={sentences.join(" ")}
+      description={
+        <>
+          {target.childThreadCount ? (
+            <>
+              Its{" "}
+              <span className="font-semibold">
+                {formatSubthreadCount(target.childThreadCount)}
+              </span>{" "}
+              will be deleted too.{" "}
+            </>
+          ) : null}
+          This action cannot be undone.
+        </>
+      }
       confirmLabel={`Delete ${label}`}
       pending={pending}
       onConfirm={() => onDelete(target)}

@@ -35,15 +35,18 @@ function renderDialog({
 describe("ThreadArchiveDialog", () => {
   it("announces the cascade with singular and plural child counts", () => {
     const { view } = renderDialog({ childThreadCount: 1 });
-    expect(
-      screen.getByText(/Its 1 subthread will be archived too\./),
-    ).toBeTruthy();
+    expect(screen.getByRole("dialog").textContent).toContain(
+      "Its 1 subthread will be archived too.",
+    );
+    expect(screen.getByText("1 subthread").className).toContain(
+      "font-semibold",
+    );
 
     view.unmount();
     renderDialog({ childThreadCount: 3 });
-    expect(
-      screen.getByText(/Its 3 subthreads will be archived too\./),
-    ).toBeTruthy();
+    expect(screen.getByRole("dialog").textContent).toContain(
+      "Its 3 subthreads will be archived too.",
+    );
   });
 
   it("names the single thread in the title and action", () => {
