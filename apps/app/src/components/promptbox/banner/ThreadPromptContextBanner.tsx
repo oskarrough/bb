@@ -279,21 +279,24 @@ function SectionToggleButton({
 
 const PARENT_SECTION_COPY: Record<
   ThreadPromptParentThreadSection["relationship"],
-  { verb: string; bodyLead: string; ariaPrefix: string }
+  { verb: string; bodyLead: string; bodyEnd: string; ariaPrefix: string }
 > = {
   parent: {
     verb: "Subthread of",
-    bodyLead: "This thread is a subthread of ",
+    bodyLead: "Subthread of: ",
+    bodyEnd: "",
     ariaPrefix: "Subthread of",
   },
   fork: {
     verb: "Forked from",
     bodyLead: "This thread was forked from ",
+    bodyEnd: ".",
     ariaPrefix: "Forked from",
   },
   "side-chat": {
     verb: "Side chat of",
     bodyLead: "This thread is a side chat of ",
+    bodyEnd: ".",
     ariaPrefix: "Side chat of",
   },
 };
@@ -418,7 +421,7 @@ function ParentThreadSectionBody({
             inline
           />
         </NavLink>
-        .
+        {PARENT_SECTION_COPY[section.relationship].bodyEnd}
       </div>
     </AnimatedBody>
   );
