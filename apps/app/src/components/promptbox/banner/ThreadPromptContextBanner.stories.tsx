@@ -406,7 +406,7 @@ const childThreadsMixedFixture: ThreadPromptChildThreadsSection = {
 const childThreadsLargeFixture: ThreadPromptChildThreadsSection = {
   items: Array.from({ length: 12 }, (_, i) => ({
     id: `thr_large_${i}`,
-    title: `Child work item ${i + 1} that is busy doing thing-${i}`,
+    title: `Subthread work item ${i + 1} that is busy doing thing-${i}`,
     href: `/projects/proj-1/threads/thr_large_${i}`,
     hasPendingInteraction: i === 1,
   })),
@@ -728,7 +728,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="archived + subthread"
-        hint="archived row plus parent context; action is hidden because archived is not the only segment"
+        hint="archived row plus Subthread of context; action is hidden because archived is not the only segment"
       >
         <Row
           archived={archivedFixture}
@@ -738,7 +738,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="archived thread (with other context, all suppressed)"
-        hint="archived takes precedence — git/child work are hidden, so the unarchive action remains available"
+        hint="archived takes precedence — git/subthread work are hidden, so the unarchive action remains available"
       >
         <Row
           archived={archivedFixture}
@@ -749,7 +749,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="environment archived"
-        hint="archived-environment row suppresses git/childThreads"
+        hint="archived-environment row suppresses git and subthreads"
       >
         <Row environmentGone={destroyedEnvironmentFixture} mergeBase={null} />
       </StoryRow>
@@ -761,7 +761,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="environment archived + subthread"
-        hint="archived-environment row plus parent context"
+        hint="archived-environment row plus Subthread of context"
       >
         <Row
           environmentGone={destroyedEnvironmentFixture}
@@ -771,7 +771,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="environment archived (with other context, all suppressed)"
-        hint="archived environment takes precedence — git/child work are hidden"
+        hint="archived environment takes precedence — git/subthread work are hidden"
       >
         <Row
           environmentGone={destroyedEnvironmentFixture}
@@ -796,20 +796,20 @@ export function Overview() {
         <Row parentThread={sideChatFromFixture} mergeBase={null} />
       </StoryRow>
       <StoryRow
-        label="parent thread with a child waiting for approval"
-        hint="the parent banner names the blocked child and drops the active shimmer"
+        label="thread with a subthread waiting for approval"
+        hint="the banner names the blocked subthread and drops the active shimmer"
       >
         <Row childThreads={childThreadsPendingFixture} mergeBase={null} />
       </StoryRow>
       <StoryRow
-        label="parent thread with active children (collapsed)"
-        hint="the primary child mirrors other background-work banners without an animated flash; click to expand the child list"
+        label="thread with active subthreads (collapsed)"
+        hint="the primary subthread mirrors other background-work banners without an animated flash; click to expand the subthread list"
       >
         <Row childThreads={childThreadsFixture} mergeBase={null} />
       </StoryRow>
       <StoryRow
-        label="active child + pull request + uncommitted"
-        hint="long child titles stay within the shared stack; pull request actions remain available"
+        label="active subthread + pull request + uncommitted"
+        hint="long subthread titles stay within the shared stack; pull request actions remain available"
       >
         <Row
           childThreads={childThreadsFixture}
@@ -819,8 +819,8 @@ export function Overview() {
         />
       </StoryRow>
       <StoryRow
-        label="parent thread with active children (expanded)"
-        hint="list of children with status + pending-approval marker on item 2"
+        label="thread with active subthreads (expanded)"
+        hint="list of subthreads with status + pending-approval marker on item 2"
       >
         <Row
           childThreads={childThreadsMixedFixture}
@@ -829,7 +829,7 @@ export function Overview() {
         />
       </StoryRow>
       <StoryRow
-        label="parent thread with many children (scrollable)"
+        label="thread with many subthreads (scrollable)"
         hint="max-h-40 caps the list; rest scrolls"
       >
         <Row
@@ -840,7 +840,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="subthread + uncommitted"
-        hint="with other context, the parent-thread segment collapses to an icon-only toggle"
+        hint="with other context, the Subthread of segment collapses to an icon-only toggle"
       >
         <Row section={uncommittedSection} parentThread={parentThreadFixture} />
       </StoryRow>
