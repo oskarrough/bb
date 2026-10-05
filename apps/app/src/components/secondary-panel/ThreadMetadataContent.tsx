@@ -773,8 +773,7 @@ function ThreadCommitListItem({
 }: ThreadCommitListItemProps) {
   const shortSha = commit.sha.slice(0, COMMIT_SHA_DISPLAY_LENGTH);
   const authoredAt = new Date(commit.authoredAt);
-  const subjectClassName =
-    "min-w-0 truncate text-left text-xs leading-5 opacity-70";
+  const subjectClassName = "min-w-0 truncate text-left text-xs leading-5";
 
   return (
     <div
@@ -824,7 +823,7 @@ function ThreadCommitListItem({
       <time
         dateTime={authoredAt.toISOString()}
         title={`${commit.authorName} · ${authoredAt.toLocaleString()}`}
-        className="text-xs leading-5 text-muted-foreground tabular-nums"
+        className="justify-self-end text-xs leading-5 text-subtle-foreground tabular-nums"
       >
         {formatRelativeTime({ timestamp: commit.authoredAt, now })}
       </time>
@@ -1052,7 +1051,7 @@ export function ThreadMetadataCard({ children }: DetailCardWrapperProps) {
   return (
     <DetailCard
       appearance="flat"
-      className="transient-scrollbar [--change-list-marker-width:var(--detail-label-width,96px)] min-h-0 flex-1 gap-1.5 overflow-x-hidden overflow-y-auto px-4 py-3 max-md:gap-0 max-md:py-1 max-md:[--detail-label-width:7.5rem] max-md:[&>div]:min-h-10 max-md:[&>div:not(.items-center)]:pt-2.5"
+      className="transient-scrollbar [--change-list-marker-width:var(--detail-label-width,96px)] [--change-list-meta-width:minmax(4.5rem,auto)] min-h-0 flex-1 gap-1.5 overflow-x-hidden overflow-y-auto px-4 py-3 max-md:gap-0 max-md:py-1 max-md:[--detail-label-width:7.5rem] max-md:[&>div]:min-h-10 max-md:[&>div:not(.items-center)]:pt-2.5"
       onScroll={handleScroll}
     >
       {children}

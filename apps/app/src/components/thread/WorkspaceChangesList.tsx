@@ -31,7 +31,7 @@ interface WorkspaceChangesListItemProps {
 }
 
 export const WORKSPACE_CHANGE_ROW_CLASS =
-  "grid grid-cols-[var(--change-list-marker-width,1.5rem)_minmax(0,1fr)_auto] items-start gap-x-3";
+  "grid grid-cols-[var(--change-list-marker-width,1.5rem)_minmax(0,1fr)_var(--change-list-meta-width,auto)] items-start gap-x-3";
 
 export const WORKSPACE_CHANGES_LIST_MAX_ROWS = 200;
 
@@ -51,7 +51,7 @@ function WorkspaceChangesListItem({
   const rowContent = (
     <>
       {statusLabel === "word" ? (
-        <span className="text-xs leading-5 text-muted-foreground opacity-70">
+        <span className="text-xs leading-5 text-muted-foreground">
           {describeWorkspaceFileStatus(file.status)}
         </span>
       ) : (
@@ -64,17 +64,14 @@ function WorkspaceChangesListItem({
       )}
       <FilePathLink
         path={file.path}
-        className={cn(
-          "opacity-70",
-          onFileClick ? "group-hover:underline" : undefined,
-        )}
+        className={onFileClick ? "group-hover:underline" : undefined}
       />
       {file.insertions !== null && file.deletions !== null ? (
         <DiffStatsTally
           insertions={file.insertions}
           deletions={file.deletions}
           hideZero
-          className="text-xs leading-5"
+          className="justify-self-end text-xs leading-5"
         />
       ) : null}
     </>
