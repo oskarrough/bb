@@ -11,7 +11,7 @@ import { Icon } from "@bb/shared-ui/icon";
 import { WorkspaceChangesList } from "@/components/thread/WorkspaceChangesList";
 import { cn } from "@bb/shared-ui/lib/utils";
 import {
-  renderChangeSummary,
+  renderChangeSummaryParts,
   toChangeTally,
   type WorkspaceChangedFileSelection,
   type WorkspaceChangedFilesSection,
@@ -48,14 +48,20 @@ export function ChangedFilesDetailRow({
   const tally = toChangeTally(activeSection.stats);
   const hasMultipleBuckets = sections.length > 1;
 
+  const summary = renderChangeSummaryParts(tally);
   const aggregate = (
-    <span className="truncate text-muted-foreground">
-      {renderChangeSummary(tally)}
-    </span>
+    <>
+      <span className="min-w-0 truncate text-muted-foreground">
+        {summary.files}
+      </span>
+      {summary.lines === null ? null : (
+        <span className="ml-auto shrink-0">{summary.lines}</span>
+      )}
+    </>
   );
 
   const label = hasMultipleBuckets ? (
-    <span className="flex items-baseline gap-x-3">
+    <span className="flex w-full items-baseline gap-x-3">
       <span className="flex min-w-[var(--detail-label-width,96px)] items-baseline">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -98,7 +104,7 @@ export function ChangedFilesDetailRow({
       {aggregate}
     </span>
   ) : (
-    <span className="flex items-baseline gap-x-3">
+    <span className="flex w-full items-baseline gap-x-3">
       <span className="min-w-[var(--detail-label-width,96px)] truncate">
         {activeSection.label}
       </span>

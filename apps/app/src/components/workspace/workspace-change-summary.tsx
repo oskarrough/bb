@@ -60,17 +60,38 @@ export function formatChangeSummary(tally: ChangeTally): string {
   );
 }
 
+interface ChangeSummaryParts {
+  files: string;
+  lines: ReactNode;
+}
+
+export function renderChangeSummaryParts(
+  tally: ChangeTally,
+): ChangeSummaryParts {
+  const withoutLineStats = formatChangeSummaryWithoutLineStats(tally);
+  if (withoutLineStats !== null) {
+    return { files: withoutLineStats, lines: null };
+  }
+  return {
+    files: formatWorkspaceChangedFilesLabel(tally.filesCount),
+    lines: (
+      <DiffStatsTally
+        insertions={tally.insertions}
+        deletions={tally.deletions}
+      />
+    ),
+  };
+}
+
 export function renderChangeSummary(tally: ChangeTally): ReactNode {
+  const { files, lines } = renderChangeSummaryParts(tally);
+  if (lines === null) {
+    return files;
+  }
   return (
-    formatChangeSummaryWithoutLineStats(tally) ?? (
-      <>
-        {formatWorkspaceChangedFilesLabel(tally.filesCount)},{" "}
-        <DiffStatsTally
-          insertions={tally.insertions}
-          deletions={tally.deletions}
-        />
-      </>
-    )
+    <>
+      {files}, {lines}
+    </>
   );
 }
 
