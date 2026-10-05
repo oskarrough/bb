@@ -59,7 +59,7 @@ import {
 } from "@/components/pickers/BranchPicker";
 import { ThreadUnarchiveButton } from "@/components/thread/ThreadUnarchiveButton";
 import { ChangedFilesDetailRow } from "@/components/workspace/ChangedFilesDetailRow";
-import { CHANGE_LIST_ROW_CLASS } from "@/components/thread/WorkspaceChangesList";
+import { WORKSPACE_CHANGE_ROW_CLASS } from "@/components/thread/WorkspaceChangesList";
 import {
   selectWorkspaceAheadCommits,
   selectWorkspaceChangedFilesSections,
@@ -210,28 +210,22 @@ interface RelatedThreads {
   forks: readonly ThreadListEntry[];
 }
 
-export function useRelatedThreads(
-  thread: Thread,
-  { enabled = true }: { enabled?: boolean } = {},
-): RelatedThreads {
+function useRelatedThreads(thread: Thread): RelatedThreads {
   const parentThreadId = thread.parentThreadId ?? undefined;
   const subthreadsQuery = useChildThreads({
-    enabled,
+    enabled: true,
     parentThreadId: thread.id,
   });
   const parentSubthreadsQuery = useChildThreads({
-    enabled: enabled && parentThreadId !== undefined,
+    enabled: parentThreadId !== undefined,
     parentThreadId,
   });
-  const forksQuery = useThreads(
-    {
-      projectId: thread.projectId,
-      sourceThreadId: thread.id,
-      originKind: "fork",
-      archived: false,
-    },
-    { enabled },
-  );
+  const forksQuery = useThreads({
+    projectId: thread.projectId,
+    sourceThreadId: thread.id,
+    originKind: "fork",
+    archived: false,
+  });
   const parentSubthreads = parentSubthreadsQuery.data;
   const siblingSubthreads = useMemo(
     () =>
@@ -834,7 +828,7 @@ function ThreadCommitListItem({
   return (
     <div
       className={cn(
-        CHANGE_LIST_ROW_CLASS,
+        WORKSPACE_CHANGE_ROW_CLASS,
         "rounded px-1 transition-colors has-[[data-commit-subject]:hover]:bg-state-hover",
       )}
     >
@@ -1039,7 +1033,7 @@ export function hasAnyThreadMetadata(
     | "workspaceUnavailable"
     | "pullRequest"
   >,
-  hasRelatedThreads: boolean,
+  hasForks: boolean,
 ): boolean {
   const parentThreadId = thread.parentThreadId ?? undefined;
   const showWorkspaceStatus = shouldShowWorkspaceStatus({
@@ -1063,7 +1057,7 @@ export function hasAnyThreadMetadata(
     showWorkspaceStatus ||
     showThreadChangedFiles ||
     thread.archivedAt != null ||
-    hasRelatedThreads,
+    hasForks,
   );
 }
 

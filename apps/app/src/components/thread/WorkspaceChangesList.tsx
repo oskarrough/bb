@@ -26,11 +26,8 @@ interface WorkspaceChangesListItemProps {
   onFileClick?: WorkspaceChangedFileClickHandler;
 }
 
-export const CHANGE_LIST_ROW_CLASS =
+export const WORKSPACE_CHANGE_ROW_CLASS =
   "grid grid-cols-[var(--change-list-marker-width,1.5rem)_minmax(0,1fr)_auto] items-start gap-x-3";
-
-const CHANGE_LIST_INTERACTIVE_ROW_CLASS =
-  "w-full rounded px-1 text-left transition-colors hover:bg-state-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export const WORKSPACE_CHANGES_LIST_MAX_ROWS = 200;
 
@@ -73,16 +70,15 @@ function WorkspaceChangesListItem({
   );
 
   if (!onFileClick) {
-    return <div className={CHANGE_LIST_ROW_CLASS}>{rowContent}</div>;
+    return <div className={WORKSPACE_CHANGE_ROW_CLASS}>{rowContent}</div>;
   }
 
   return (
     <button
       type="button"
       className={cn(
-        CHANGE_LIST_ROW_CLASS,
-        CHANGE_LIST_INTERACTIVE_ROW_CLASS,
-        "group",
+        WORKSPACE_CHANGE_ROW_CLASS,
+        "group w-full rounded px-1 text-left transition-colors hover:bg-state-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
       )}
       aria-label={`Open ${file.path}`}
       onClick={() => onFileClick(file)}

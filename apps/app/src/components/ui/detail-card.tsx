@@ -20,25 +20,6 @@ export function DetailRowIconLabel({
   );
 }
 
-export function DetailSectionLabel({
-  children,
-  summary,
-}: {
-  children: ReactNode;
-  summary?: ReactNode;
-}) {
-  return (
-    <span className="flex items-baseline gap-x-3">
-      <span className="flex min-w-[var(--detail-label-width,96px)] items-baseline">
-        {children}
-      </span>
-      {summary === undefined ? null : (
-        <span className="truncate text-muted-foreground">{summary}</span>
-      )}
-    </span>
-  );
-}
-
 export const DETAIL_GRID_CLASS =
   "grid grid-cols-[var(--detail-label-width,96px)_minmax(0,1fr)] gap-x-3";
 const DETAIL_LABEL_CLASS = "m-0 text-xs leading-5 text-muted-foreground";

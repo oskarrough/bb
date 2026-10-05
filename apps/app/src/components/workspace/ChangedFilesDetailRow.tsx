@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@bb/shared-ui/button";
-import { DetailRow, DetailSectionLabel } from "@/components/ui/detail-card.js";
+import { DetailRow } from "@/components/ui/detail-card.js";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,52 +48,62 @@ export function ChangedFilesDetailRow({
   const tally = toChangeTally(activeSection.stats);
   const hasMultipleBuckets = sections.length > 1;
 
-  const summary = renderChangeSummary(tally);
+  const aggregate = (
+    <span className="truncate text-muted-foreground">
+      {renderChangeSummary(tally)}
+    </span>
+  );
 
   const label = hasMultipleBuckets ? (
-    <DetailSectionLabel summary={summary}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-5 w-auto min-w-0 justify-between gap-1 rounded-sm px-0 text-xs font-normal shadow-none hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent"
-            aria-label="Switch changed files bucket"
-          >
-            <span className="truncate">{activeSection.label}</span>
-            <Icon
-              name="ChevronDown"
-              className="size-3 shrink-0 text-muted-foreground"
-            />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          {sections.map((option) => (
-            <DropdownMenuItem
-              key={option.kind}
-              onSelect={() => setSelectedKind(option.kind)}
-              className="flex items-center justify-between gap-2"
+    <span className="flex items-baseline gap-x-3">
+      <span className="flex min-w-[var(--detail-label-width,96px)] items-baseline">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-5 w-auto min-w-0 justify-between gap-1 rounded-sm px-0 text-xs font-normal shadow-none hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent"
+              aria-label="Switch changed files bucket"
             >
-              <span className="truncate">{option.label}</span>
+              <span className="truncate">{activeSection.label}</span>
               <Icon
-                name="Check"
-                className={cn(
-                  "size-3.5 shrink-0",
-                  option.kind === activeSection.kind
-                    ? "opacity-100"
-                    : "opacity-0",
-                )}
+                name="ChevronDown"
+                className="size-3 shrink-0 text-muted-foreground"
               />
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </DetailSectionLabel>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {sections.map((option) => (
+              <DropdownMenuItem
+                key={option.kind}
+                onSelect={() => setSelectedKind(option.kind)}
+                className="flex items-center justify-between gap-2"
+              >
+                <span className="truncate">{option.label}</span>
+                <Icon
+                  name="Check"
+                  className={cn(
+                    "size-3.5 shrink-0",
+                    option.kind === activeSection.kind
+                      ? "opacity-100"
+                      : "opacity-0",
+                  )}
+                />
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </span>
+      {aggregate}
+    </span>
   ) : (
-    <DetailSectionLabel summary={summary}>
-      <span className="truncate">{activeSection.label}</span>
-    </DetailSectionLabel>
+    <span className="flex items-baseline gap-x-3">
+      <span className="min-w-[var(--detail-label-width,96px)] truncate">
+        {activeSection.label}
+      </span>
+      {aggregate}
+    </span>
   );
 
   return (

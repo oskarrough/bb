@@ -11,10 +11,10 @@ import {
   ThreadMetadataCard,
   ThreadMetadataContent,
   hasAnyThreadMetadata,
-  useRelatedThreads,
   type ThreadMetadataContentProps,
 } from "@/components/secondary-panel/ThreadMetadataContent";
 import { DETAIL_GRID_CLASS } from "@/components/ui/detail-card.js";
+import { useThreads } from "@/hooks/queries/thread-queries";
 import { ThreadTimelinePane } from "./ThreadTimelinePane";
 
 type ThreadTimelinePaneProps = Omit<
@@ -80,14 +80,19 @@ function ThreadDetailSecondaryContentBody({
   const composerHost = usePluginComposerHost();
   const { renderBrowserDeck, ...threadSecondaryPanelProps } = secondaryPanel;
 
-  const relatedThreads = useRelatedThreads(metadata.thread, {
-    enabled: isSecondaryPanelOpen,
-  });
-  const hasRelatedThreads =
-    relatedThreads.subthreads.length > 0 || relatedThreads.forks.length > 0;
+  const forksQuery = useThreads(
+    {
+      projectId: metadata.thread.projectId,
+      sourceThreadId: metadata.thread.id,
+      originKind: "fork",
+      archived: false,
+    },
+    { enabled: isSecondaryPanelOpen },
+  );
+  const hasForks = (forksQuery.data?.length ?? 0) > 0;
   const metadataContent = useMemo(
     () =>
-      hasAnyThreadMetadata(metadata, hasRelatedThreads) ? (
+      hasAnyThreadMetadata(metadata, hasForks) ? (
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <ThreadMetadataContent {...metadata} />
         </div>
@@ -98,7 +103,7 @@ function ThreadDetailSecondaryContentBody({
           No thread details available.
         </div>
       ),
-    [hasRelatedThreads, isMetadataLoading, metadata],
+    [hasForks, isMetadataLoading, metadata],
   );
 
   return (
