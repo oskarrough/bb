@@ -306,7 +306,7 @@ const PARENT_SECTION_ICON: Record<
   ThreadPromptParentThreadSection["relationship"],
   IconName
 > = {
-  parent: "Subthread",
+  parent: "UserRound",
   fork: "Fork",
   "side-chat": "SideChat",
 };

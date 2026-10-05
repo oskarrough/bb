@@ -98,8 +98,8 @@ const USAGE: Partial<Record<IconName, string>> = {
   TextWrap: "Line-wrap toggle for diff cards and source file previews",
   Trash2: "Delete queued message, remove project source",
   Subthread:
-    "Subthread badges, the parent card and row, running subthreads, and thread assignment events",
-  UserRound: "Thread mentions and thread links",
+    "Subthread badges, running subthreads, and thread assignment events",
+  UserRound: "Thread mentions, thread links, and the Parent card and row",
   UserRoundPlus: "Subagent timeline rows",
   Workflow: "Workflow card indicator in the prompt stack",
   X: "Close dialogs/drawers, clear search input, remove attachment, close metadata panel",
