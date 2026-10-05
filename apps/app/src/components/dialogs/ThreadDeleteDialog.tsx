@@ -3,6 +3,7 @@ import {
   ConfirmDeleteDialog,
   ConfirmDeleteDialogContent,
 } from "./ConfirmDeleteDialog";
+import { formatSubthreadCount } from "@/lib/subthread-copy";
 
 export interface ThreadDeleteDialogTarget {
   thread: Thread;
@@ -52,7 +53,7 @@ export function ThreadDeleteDialogContent({
   const label = "thread";
   const sentences = [
     target.childThreadCount
-      ? `Its ${target.childThreadCount} ${target.childThreadCount === 1 ? "subthread" : "subthreads"} will be deleted too.`
+      ? `Its ${formatSubthreadCount(target.childThreadCount)} will be deleted too.`
       : null,
     "This action cannot be undone.",
   ].filter((part): part is string => part !== null);

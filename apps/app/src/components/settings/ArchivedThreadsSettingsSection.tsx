@@ -30,6 +30,7 @@ import {
   ThreadTitle,
   useResolveThreadTitle,
 } from "@/components/thread/ThreadTitleMentions";
+import { SUBTHREAD_NOUN } from "@/lib/subthread-copy";
 
 const ALL_PROJECTS = "all";
 const ARCHIVED_THREAD_SEARCH_LIMIT = 50;
@@ -270,7 +271,7 @@ export function ArchivedThreadsSettingsSection() {
                                 className="size-3"
                                 aria-hidden
                               />
-                              subthread
+                              {SUBTHREAD_NOUN}
                             </span>
                           </Pill>
                         ) : null}

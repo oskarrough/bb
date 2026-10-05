@@ -32,6 +32,7 @@ import {
   type ThreadMentionRelation,
   type TypeaheadMenuState,
 } from "@bb/client-core";
+import { SUBTHREAD_NOUN } from "@/lib/subthread-copy";
 
 export type TypeaheadSuggestion =
   | PromptMentionSuggestion
@@ -110,9 +111,9 @@ const THREAD_MENTION_RELATION_LABEL: Record<
   ThreadMentionRelation,
   string | null
 > = {
-  parent: null,
-  child: "subthread",
-  "same-parent": null,
+  parent: "parent",
+  child: SUBTHREAD_NOUN,
+  "same-parent": "sibling",
   "same-environment": "same environment",
 };
 
@@ -120,9 +121,9 @@ const THREAD_MENTION_RELATION_COMPACT_LABEL: Record<
   ThreadMentionRelation,
   string | null
 > = {
-  parent: null,
-  child: "subthread",
-  "same-parent": null,
+  parent: "parent",
+  child: SUBTHREAD_NOUN,
+  "same-parent": "sibling",
   "same-environment": "same env",
 };
 

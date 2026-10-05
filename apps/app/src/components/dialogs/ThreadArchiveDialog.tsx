@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@bb/shared-ui/dialog";
+import { formatSubthreadCount } from "@/lib/subthread-copy";
 
 export interface ThreadArchiveDialogTarget {
   thread: Thread;
@@ -74,7 +75,7 @@ export function ThreadArchiveDialogContent({
     target.thread.status === "stopping";
   const sentences = [
     active ? "This will stop current work." : null,
-    `Its ${childThreadCount} ${childThreadCount === 1 ? "subthread" : "subthreads"} will be archived too.`,
+    `Its ${formatSubthreadCount(childThreadCount)} will be archived too.`,
     "Archived threads stay available and can be unarchived.",
   ].filter((sentence): sentence is string => sentence !== null);
 

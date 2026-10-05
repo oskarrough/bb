@@ -4609,12 +4609,12 @@ describe("PromptBoxInternal mention triggers", () => {
         .getAllByRole("button")
         .map((button) => button.getAttribute("title")),
     ).toEqual([
-      "Shared context",
+      "Shared context · parent",
       "Shared context · same environment",
       "Shared context",
       "Shared context · subthread",
     ]);
-    expect(within(menu).queryByText("parent")).toBeNull();
+    expect(within(menu).getByText("parent")).toBeTruthy();
     expect(within(menu).getByText("subthread")).toBeTruthy();
     expect(within(menu).getByText("same environment")).toBeTruthy();
     expect(within(menu).getByText("same env").className).toContain("hidden");

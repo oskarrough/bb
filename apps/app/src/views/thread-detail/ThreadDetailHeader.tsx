@@ -52,7 +52,7 @@ const NARROW_SPLIT_HEADER_MAX_WIDTH = 560;
 
 interface ThreadDetailHeaderProps {
   actionsMenu: ((includeResponsiveActions: boolean) => ReactNode) | null;
-  childPillLabel: "subthread" | "side chat" | null;
+  childPillLabel: "side chat" | null;
   isSecondaryPanelOpen: boolean;
   onClosePane?: () => void;
   onOpenThreadGitAction: (target: ThreadGitActionDialogTarget) => void;
@@ -183,12 +183,7 @@ export function ThreadDetailHeader({
       </div>
       {childPillLabel ? (
         <Pill variant="outline" size="sm">
-          <span className="inline-flex items-center gap-1 align-middle">
-            {childPillLabel === "subthread" ? (
-              <Icon name="Subthread" className="size-3" aria-hidden />
-            ) : null}
-            {childPillLabel}
-          </span>
+          {childPillLabel}
         </Pill>
       ) : null}
       {actionsMenu == null ? null : (

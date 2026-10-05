@@ -2531,9 +2531,7 @@ function ThreadDetailViewInternal(
           }
         />
       )}
-      childPillLabel={
-        isSideChatThread ? "side chat" : parentThreadId ? "subthread" : null
-      }
+      childPillLabel={isSideChatThread ? "side chat" : null}
       isSecondaryPanelOpen={isSecondaryPanelOpen}
       onClosePane={onRequestClose ?? undefined}
       onOpenThreadGitAction={gitActions.threadGitActionDialog.onOpen}

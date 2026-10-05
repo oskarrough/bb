@@ -67,6 +67,7 @@ import {
   ThreadTitle,
   useThreadTitleDisplayText,
 } from "@/components/thread/ThreadTitleMentions";
+import { formatSubthreadCount, subthreadNoun } from "@/lib/subthread-copy";
 
 export interface ContextBannerMergeBaseConfig {
   branch: string;
@@ -645,9 +646,9 @@ function childThreadsLabel(args: {
   pendingCount: number;
 }): string {
   if (args.pendingCount > 0) {
-    return `${args.pendingCount} ${args.pendingCount === 1 ? "subthread needs" : "subthreads need"} input`;
+    return `${formatSubthreadCount(args.pendingCount)} ${args.pendingCount === 1 ? "needs" : "need"} input`;
   }
-  return `${args.count} active ${args.count === 1 ? "subthread" : "subthreads"}`;
+  return `${args.count} active ${subthreadNoun(args.count)}`;
 }
 
 function ActiveChildThreadsCard({

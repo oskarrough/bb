@@ -400,7 +400,7 @@ export function Overview() {
       </StoryRow>
       <StoryRow
         label="thread relations"
-        hint="relation pill: subthread and same environment; the parent and siblings show no pill; unrelated rows keep only a project name"
+        hint="relation pill: parent, subthread, sibling, same environment; unrelated rows keep only a project name"
       >
         <MentionRow
           state={makeResultsState({ suggestions: relatedThreadSuggestions })}
