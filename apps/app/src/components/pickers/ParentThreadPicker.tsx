@@ -103,7 +103,7 @@ export function ParentThreadPicker({
       <PopoverContent
         align="start"
         className="w-72 p-0"
-        mobileTitle="Subthread of"
+        mobileTitle="Parent"
       >
         <Command label="Search threads" shouldFilter={false}>
           <CommandInput

@@ -140,9 +140,7 @@ export function ParentSelectorRow({
 
   return (
     <DetailRow
-      label={
-        <DetailRowIconLabel icon="Subthread">Subthread of</DetailRowIconLabel>
-      }
+      label={<DetailRowIconLabel icon="Subthread">Parent</DetailRowIconLabel>}
       valueClassName="min-w-0"
     >
       {parentThreadId ? (
