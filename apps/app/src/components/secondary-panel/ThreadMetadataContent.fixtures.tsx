@@ -39,6 +39,21 @@ export const parentThreads: ThreadListEntry[] = [
   }),
 ];
 
+export const subthreads: ThreadListEntry[] = [
+  makeThreadListEntry({
+    id: "thr_review_subthread",
+    parentThreadId: "thr_codex_parent",
+    title: "Review the info panel diff",
+    titleFallback: "Review the info panel diff",
+  }),
+  makeThreadListEntry({
+    id: "thr_screenshots_subthread",
+    parentThreadId: "thr_codex_parent",
+    title: "Capture before and after screenshots",
+    titleFallback: "Capture before and after screenshots",
+  }),
+];
+
 export function makePullRequest(
   overrides: Partial<ThreadPullRequest> = {},
 ): ThreadPullRequest {

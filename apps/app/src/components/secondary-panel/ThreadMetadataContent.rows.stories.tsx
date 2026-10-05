@@ -12,6 +12,7 @@ import {
   ArchivedRow,
   ThreadCommitsRow,
   ChangedFilesRow,
+  RelatedThreadsRow,
   ThreadMetadataCard,
 } from "./ThreadMetadataContent";
 import {
@@ -19,6 +20,7 @@ import {
   baseProps,
   localEnvironmentDisplayHost,
   parentThreads,
+  subthreads,
   makeEnvironment,
   makePullRequest,
   makeThread,
@@ -180,6 +182,40 @@ export function ParentSelector() {
             onParentSelectorOpenChange={noop}
             onRetryParentThreads={noop}
             defaultOpen
+          />
+        </RowStage>
+      </StoryRow>
+    </StoryCard>
+  );
+}
+
+export function RelatedThreads() {
+  return (
+    <StoryCard>
+      <StoryRow label="other subthreads (this thread is a subthread)">
+        <RowStage>
+          <RelatedThreadsRow
+            icon="Subthread"
+            label="Other subthreads"
+            threads={subthreads}
+          />
+        </RowStage>
+      </StoryRow>
+      <StoryRow label="subthreads (this thread has subthreads)">
+        <RowStage>
+          <RelatedThreadsRow
+            icon="Subthread"
+            label="Subthreads"
+            threads={subthreads}
+          />
+        </RowStage>
+      </StoryRow>
+      <StoryRow label="forks">
+        <RowStage>
+          <RelatedThreadsRow
+            icon="Fork"
+            label="Forks"
+            threads={parentThreads}
           />
         </RowStage>
       </StoryRow>

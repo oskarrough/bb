@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/detail-card.js";
 import { CHROME_SECTION_LABEL_CLASS } from "@bb/shared-ui/chrome-style-tokens";
 import { useCreateThreadInEnvironment } from "@/hooks/useCreateThreadInEnvironment";
-import { Icon } from "@bb/shared-ui/icon";
+import { Icon, type IconName } from "@bb/shared-ui/icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@bb/shared-ui/tooltip";
 import {
   BranchPicker,
@@ -59,6 +59,7 @@ import {
 } from "@/components/pickers/BranchPicker";
 import { ThreadUnarchiveButton } from "@/components/thread/ThreadUnarchiveButton";
 import { ChangedFilesDetailRow } from "@/components/workspace/ChangedFilesDetailRow";
+import { CHANGE_LIST_ROW_CLASS } from "@/components/thread/WorkspaceChangesList";
 import {
   selectWorkspaceAheadCommits,
   selectWorkspaceChangedFilesSections,
@@ -66,7 +67,8 @@ import {
 } from "@/components/workspace/workspace-change-summary";
 import { getGitStatusDisplay } from "@/components/workspace/workspace-status";
 import { useUnarchiveThread } from "../../hooks/mutations/thread-state-mutations";
-import { useThreads } from "@/hooks/queries/thread-queries";
+import { useChildThreads, useThreads } from "@/hooks/queries/thread-queries";
+import { formatRelativeTime } from "@/lib/relative-time";
 import { buildParentSelectorOptions } from "@/views/thread-detail/threadParentSelectorOptions";
 import { getThreadRoutePath } from "@/lib/route-paths";
 import { getThreadDisplayTitle } from "@/lib/thread-title";
@@ -80,6 +82,13 @@ import { PullRequestStateIcon } from "@/components/pull-request/PullRequestStatu
 import { GithubFaviconIcon } from "@/components/pull-request/GithubFaviconIcon";
 import { useUrlAnchorClickHandler } from "@/lib/url-open-routing";
 import { ParentThreadPicker } from "@/components/pickers/ParentThreadPicker";
+
+const THREAD_LINK_CLASS_NAME = cn(
+  "block min-w-0 text-foreground no-underline transition-[text-decoration-color] duration-150 hover:underline hover:underline-offset-2",
+  COARSE_POINTER_TEXT_SM_CLASS,
+);
+
+const EMPTY_RELATED_THREADS: readonly ThreadListEntry[] = [];
 
 interface ParentSelectorRowProps {
   thread: Thread;
@@ -136,7 +145,9 @@ export function ParentSelectorRow({
 
   return (
     <DetailRow
-      label={<DetailRowIconLabel icon="Subthread">Subthread of</DetailRowIconLabel>}
+      label={
+        <DetailRowIconLabel icon="Subthread">Subthread of</DetailRowIconLabel>
+      }
       valueClassName="min-w-0"
     >
       {parentThreadId ? (
@@ -151,10 +162,7 @@ export function ParentSelectorRow({
               projectId: parentThreadProjectId ?? projectId,
               threadId: parentThreadId,
             })}
-            className={cn(
-              "block min-w-0 text-foreground no-underline transition-[text-decoration-color] duration-150 hover:underline hover:underline-offset-2",
-              COARSE_POINTER_TEXT_SM_CLASS,
-            )}
+            className={THREAD_LINK_CLASS_NAME}
           >
             <ThreadTitle
               title={selectedParentOptionLabel ?? "Thread"}
@@ -194,37 +202,90 @@ export function ParentSelectorRow({
   );
 }
 
-interface ForksRowProps {
-  thread: Thread;
-  projectId: string;
+interface RelatedThreads {
+  subthreads: readonly ThreadListEntry[];
+  siblingSubthreads: readonly ThreadListEntry[];
+  forks: readonly ThreadListEntry[];
 }
 
-function ForksRow({ thread, projectId }: ForksRowProps) {
-  const forksQuery = useThreads({
-    projectId: thread.projectId,
-    sourceThreadId: thread.id,
-    originKind: "fork",
-    archived: false,
+export function useRelatedThreads(
+  thread: Thread,
+  { enabled = true }: { enabled?: boolean } = {},
+): RelatedThreads {
+  const parentThreadId = thread.parentThreadId ?? undefined;
+  const subthreadsQuery = useChildThreads({
+    enabled,
+    parentThreadId: thread.id,
   });
-  const forks = forksQuery.data ?? [];
-  if (forks.length === 0) {
+  const parentSubthreadsQuery = useChildThreads({
+    enabled: enabled && parentThreadId !== undefined,
+    parentThreadId,
+  });
+  const forksQuery = useThreads(
+    {
+      projectId: thread.projectId,
+      sourceThreadId: thread.id,
+      originKind: "fork",
+      archived: false,
+    },
+    { enabled },
+  );
+  const parentSubthreads = parentSubthreadsQuery.data;
+  const siblingSubthreads = useMemo(
+    () =>
+      parentSubthreads?.filter((sibling) => sibling.id !== thread.id) ??
+      EMPTY_RELATED_THREADS,
+    [parentSubthreads, thread.id],
+  );
+  return {
+    subthreads: subthreadsQuery.data ?? EMPTY_RELATED_THREADS,
+    siblingSubthreads,
+    forks: forksQuery.data ?? EMPTY_RELATED_THREADS,
+  };
+}
+
+function ThreadLinkList({ threads }: { threads: readonly ThreadListEntry[] }) {
+  return (
+    <TruncatedList
+      items={threads}
+      getKey={(relatedThread) => relatedThread.id}
+      renderItem={(relatedThread) => (
+        <Link
+          to={getThreadRoutePath({
+            projectId: relatedThread.projectId,
+            threadId: relatedThread.id,
+          })}
+          className={THREAD_LINK_CLASS_NAME}
+        >
+          <ThreadTitle title={getThreadDisplayTitle(relatedThread)} tooltip />
+        </Link>
+      )}
+    />
+  );
+}
+
+interface RelatedThreadsRowProps {
+  icon: IconName;
+  label: string;
+  threads: readonly ThreadListEntry[];
+}
+
+export function RelatedThreadsRow({
+  icon,
+  label,
+  threads,
+}: RelatedThreadsRowProps) {
+  if (threads.length === 0) {
     return null;
   }
 
   return (
-    <DetailRow label="Forks" align="start" valueClassName="min-w-0">
-      <TruncatedList
-        items={forks}
-        getKey={(fork) => fork.id}
-        renderItem={(fork) => (
-          <Link
-            to={getThreadRoutePath({ projectId, threadId: fork.id })}
-            className="block min-w-0 text-xs text-foreground no-underline transition-[text-decoration-color] duration-150 hover:underline hover:underline-offset-2"
-          >
-            <ThreadTitle title={getThreadDisplayTitle(fork)} tooltip />
-          </Link>
-        )}
-      />
+    <DetailRow
+      label={<DetailRowIconLabel icon={icon}>{label}</DetailRowIconLabel>}
+      align="start"
+      valueClassName="min-w-0"
+    >
+      <ThreadLinkList threads={threads} />
     </DetailRow>
   );
 }
@@ -692,6 +753,9 @@ export function GitStatusRow({
   });
   const labelClass =
     display.label === "Dirty" ? "text-destructive" : "text-foreground";
+  const summaryRepeatsLabel = display.summary
+    .toLowerCase()
+    .includes(display.label.toLowerCase());
 
   return (
     <DetailRow
@@ -705,9 +769,11 @@ export function GitStatusRow({
         className="flex min-w-0 items-end gap-2 whitespace-nowrap"
         title={`${display.label} ${display.summary}`}
       >
-        <span className={cn("shrink-0 font-medium", labelClass)}>
-          {display.label}
-        </span>
+        {summaryRepeatsLabel ? null : (
+          <span className={cn("shrink-0 font-medium", labelClass)}>
+            {display.label}
+          </span>
+        )}
         <span className="min-w-0 truncate text-muted-foreground">
           {display.summary}
         </span>
@@ -729,7 +795,10 @@ export function ArchivedRow({ thread }: ArchivedRowProps) {
   }, [thread.id, unarchiveThread]);
   if (thread.archivedAt == null) return null;
   return (
-    <DetailRow label="Archived" valueClassName="min-w-0 truncate">
+    <DetailRow
+      label={<DetailRowIconLabel icon="Archive">Archived</DetailRowIconLabel>}
+      valueClassName="min-w-0 truncate"
+    >
       <ThreadUnarchiveButton isPending={isPending} onUnarchive={onUnarchive} />
     </DetailRow>
   );
@@ -742,40 +811,34 @@ interface ThreadCommitsRowProps {
 
 interface ThreadCommitListItemProps {
   commit: WorkspaceCommitSummary;
+  now: number;
   onCommitClick?: (sha: string) => void;
 }
 
-const COMMIT_SHA_CHIP_CLASS_NAME =
-  "inline-flex max-w-[45%] shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-subtle-foreground transition-colors hover:bg-state-hover hover:text-foreground";
+const COMMIT_SHA_DISPLAY_LENGTH = 7;
 
 function ThreadCommitListItem({
   commit,
+  now,
   onCommitClick,
 }: ThreadCommitListItemProps) {
-  const subject = onCommitClick ? (
-    <button
-      type="button"
-      onClick={() => onCommitClick(commit.sha)}
-      title={commit.subject}
-      className="group min-w-0 flex-1 text-left"
-    >
-      <span className="block min-w-0 truncate text-readback-foreground underline-offset-2 group-hover:underline">
-        {commit.subject}
-      </span>
-    </button>
-  ) : (
-    <span className="min-w-0 flex-1 truncate text-readback-foreground">
-      {commit.subject}
-    </span>
-  );
+  const shortSha = commit.sha.slice(0, COMMIT_SHA_DISPLAY_LENGTH);
+  const authoredAt = new Date(commit.authoredAt);
+  const subjectClassName =
+    "min-w-0 truncate text-left text-xs leading-5 opacity-70";
 
   return (
-    <div className="flex min-w-0 items-center justify-between gap-2">
-      {subject}
+    <div
+      className={cn(
+        CHANGE_LIST_ROW_CLASS,
+        "rounded px-1 transition-colors has-[[data-commit-subject]:hover]:bg-state-hover",
+      )}
+    >
       <button
         type="button"
-        aria-label={`Copy commit ${commit.shortSha} SHA`}
-        className={COMMIT_SHA_CHIP_CLASS_NAME}
+        aria-label={`Copy commit ${shortSha} SHA`}
+        title="Copy SHA"
+        className="group/sha justify-self-start text-xs leading-5"
         onClick={() => {
           void copyToClipboardWithToast(commit.sha, {
             successMessage: "Commit SHA copied",
@@ -783,8 +846,35 @@ function ThreadCommitListItem({
           });
         }}
       >
-        <span className="truncate">{commit.shortSha}</span>
+        <code className="rounded bg-muted/70 px-1.5 py-0.5 font-mono transition-colors group-hover/sha:bg-muted">
+          {shortSha}
+        </code>
       </button>
+      {onCommitClick ? (
+        <button
+          type="button"
+          data-commit-subject
+          onClick={() => onCommitClick(commit.sha)}
+          title={commit.subject}
+          className={cn(
+            subjectClassName,
+            "underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          )}
+        >
+          {commit.subject}
+        </button>
+      ) : (
+        <span className={subjectClassName} title={commit.subject}>
+          {commit.subject}
+        </span>
+      )}
+      <time
+        dateTime={authoredAt.toISOString()}
+        title={`${commit.authorName} · ${authoredAt.toLocaleString()}`}
+        className="text-xs leading-5 text-muted-foreground tabular-nums"
+      >
+        {formatRelativeTime({ timestamp: commit.authoredAt, now })}
+      </time>
     </div>
   );
 }
@@ -795,27 +885,26 @@ export function ThreadCommitsRow({
 }: ThreadCommitsRowProps) {
   const commits = selectWorkspaceAheadCommits(workspaceStatus);
   if (commits.length === 0) return null;
+  const now = Date.now();
   return (
-    <>
-      <div className="mb-1 mt-3 border-t border-border" aria-hidden />
-      <DetailRow
-        label="Commits"
-        orientation="vertical"
-        labelClassName={CHROME_SECTION_LABEL_CLASS}
-        valueClassName="min-w-0"
-      >
-        <TruncatedList
-          items={commits}
-          getKey={(commit) => commit.sha}
-          renderItem={(commit) => (
-            <ThreadCommitListItem
-              commit={commit}
-              onCommitClick={onCommitClick}
-            />
-          )}
-        />
-      </DetailRow>
-    </>
+    <DetailRow
+      label="Commits"
+      orientation="vertical"
+      labelClassName={CHROME_SECTION_LABEL_CLASS}
+      valueClassName="-mx-1 min-w-0"
+    >
+      <TruncatedList
+        items={commits}
+        getKey={(commit) => commit.sha}
+        renderItem={(commit) => (
+          <ThreadCommitListItem
+            commit={commit}
+            now={now}
+            onCommitClick={onCommitClick}
+          />
+        )}
+      />
+    </DetailRow>
   );
 }
 
@@ -833,7 +922,7 @@ export function ChangedFilesRow({
       sections={selectWorkspaceChangedFilesSections(workspaceStatus)}
       onFileClick={onChangedFileClick}
       labelClassName={CHROME_SECTION_LABEL_CLASS}
-      rowClassName="mt-3"
+      rowValueClassName="-mx-1"
       limit={5}
     />
   );
@@ -943,7 +1032,7 @@ export function hasAnyThreadMetadata(
     | "workspaceUnavailable"
     | "pullRequest"
   >,
-  hasForks: boolean,
+  hasRelatedThreads: boolean,
 ): boolean {
   const parentThreadId = thread.parentThreadId ?? undefined;
   const showWorkspaceStatus = shouldShowWorkspaceStatus({
@@ -967,7 +1056,7 @@ export function hasAnyThreadMetadata(
     showWorkspaceStatus ||
     showThreadChangedFiles ||
     thread.archivedAt != null ||
-    hasForks,
+    hasRelatedThreads,
   );
 }
 
@@ -1006,7 +1095,8 @@ export function ThreadMetadataCard({ children }: DetailCardWrapperProps) {
   return (
     <DetailCard
       appearance="flat"
-      className="transient-scrollbar min-h-0 flex-1 gap-1.5 overflow-x-hidden overflow-y-auto px-4 py-3 max-md:gap-0 max-md:py-1 max-md:[--detail-label-width:7.5rem] max-md:[&>div]:min-h-10 max-md:[&>div:not(.items-center)]:pt-2.5"
+      labelWidth="7.5rem"
+      className="transient-scrollbar [--change-list-marker-width:var(--detail-label-width)] min-h-0 flex-1 gap-1.5 overflow-x-hidden overflow-y-auto px-4 py-3 max-md:gap-0 max-md:py-1 max-md:[&>div]:min-h-10 max-md:[&>div:not(.items-center)]:pt-2.5"
       onScroll={handleScroll}
     >
       {children}
@@ -1049,6 +1139,14 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
     onCommitClick,
   } = props;
 
+  const { subthreads, siblingSubthreads, forks } = useRelatedThreads(thread);
+  const isHostActive =
+    environment === null || environment.hostLifecycle === "active";
+  const hasCommittedWork =
+    isHostActive &&
+    (selectWorkspaceAheadCommits(workspaceStatus).length > 0 ||
+      selectWorkspaceChangedFilesSections(workspaceStatus).length > 0);
+
   return (
     <ThreadMetadataCard>
       <ParentSelectorRow
@@ -1066,7 +1164,17 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
         onParentSelectorOpenChange={onParentSelectorOpenChange}
         onRetryParentThreads={onRetryParentThreads}
       />
-      <ForksRow thread={thread} projectId={projectId} />
+      <RelatedThreadsRow
+        icon="Subthread"
+        label="Other subthreads"
+        threads={siblingSubthreads}
+      />
+      <RelatedThreadsRow
+        icon="Subthread"
+        label="Subthreads"
+        threads={subthreads}
+      />
+      <RelatedThreadsRow icon="Fork" label="Forks" threads={forks} />
       <ProjectRow projectId={projectId} />
       <EnvironmentRow
         thread={thread}
@@ -1077,7 +1185,7 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
         failed={environmentProvisioningFailure}
       />
       <WorkspacePathRow environment={environment} />
-      {environment !== null && environment.hostLifecycle !== "active" ? null : (
+      {isHostActive ? (
         <>
           <BranchRow workspaceStatus={workspaceStatus} />
           <MergeBaseRow
@@ -1102,11 +1210,11 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
             selectedMergeBaseBranch={selectedMergeBaseBranch}
           />
         </>
-      )}
+      ) : null}
       <PullRequestRow pullRequest={pullRequest} />
       <ArchivedRow thread={thread} />
-      {environment !== null && environment.hostLifecycle !== "active" ? null : (
-        <>
+      {hasCommittedWork ? (
+        <div className="mt-3 flex flex-col gap-3 border-t border-border pt-2.5">
           <ThreadCommitsRow
             workspaceStatus={workspaceStatus}
             onCommitClick={onCommitClick}
@@ -1115,8 +1223,8 @@ export function ThreadMetadataContent(props: ThreadMetadataContentProps) {
             workspaceStatus={workspaceStatus}
             onChangedFileClick={onChangedFileClick}
           />
-        </>
-      )}
+        </div>
+      ) : null}
       {storage ? <ThreadStorageRow {...storage} /> : null}
     </ThreadMetadataCard>
   );

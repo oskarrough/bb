@@ -3,6 +3,7 @@ import type {
   WorkspaceChangeStats,
   WorkspaceCommitSummary,
   WorkspaceFileStatus,
+  WorkspaceFileStatusKind,
   WorkspaceStatus,
 } from "@bb/domain";
 import { formatDiffStatsText } from "@bb/thread-view";
@@ -132,6 +133,26 @@ export function selectWorkspaceChangedFilesSection(
   workspaceStatus: WorkspaceStatus | undefined,
 ): WorkspaceChangedFilesSection | null {
   return selectWorkspaceChangedFilesSections(workspaceStatus)[0] ?? null;
+}
+
+const WORKSPACE_FILE_STATUS_DESCRIPTIONS: Record<
+  WorkspaceFileStatusKind,
+  string
+> = {
+  M: "Modified",
+  A: "Added",
+  D: "Deleted",
+  R: "Renamed",
+  C: "Copied",
+  U: "Unmerged",
+  "??": "Untracked",
+  "?": "Unknown",
+};
+
+export function describeWorkspaceFileStatus(
+  status: WorkspaceFileStatusKind,
+): string {
+  return WORKSPACE_FILE_STATUS_DESCRIPTIONS[status];
 }
 
 export function formatWorkspaceFileStatus(status: string): string {

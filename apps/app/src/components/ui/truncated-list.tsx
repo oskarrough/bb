@@ -19,7 +19,7 @@ export function TruncatedList<T>({
 }: TruncatedListProps<T>) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const canToggle = items.length > limit;
+  const canToggle = items.length > limit + 1;
   const visibleItems = useMemo(
     () => (isExpanded || !canToggle ? items : items.slice(0, limit)),
     [items, isExpanded, canToggle, limit],

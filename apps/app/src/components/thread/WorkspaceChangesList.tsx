@@ -4,7 +4,10 @@ import { EmptyState } from "@bb/shared-ui/empty-state";
 import { FilePathLink } from "@/components/ui/file-path-link.js";
 import { TruncatedList } from "@/components/ui/truncated-list.js";
 import { cn } from "@bb/shared-ui/lib/utils";
-import { formatWorkspaceFileStatus } from "@/components/workspace/workspace-change-summary";
+import {
+  describeWorkspaceFileStatus,
+  formatWorkspaceFileStatus,
+} from "@/components/workspace/workspace-change-summary";
 
 export type WorkspaceChangedFile =
   WorkspaceStatus["workingTree"]["files"][number];
@@ -23,8 +26,11 @@ interface WorkspaceChangesListItemProps {
   onFileClick?: WorkspaceChangedFileClickHandler;
 }
 
-const WORKSPACE_CHANGE_ROW_CLASS =
-  "grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-start gap-x-3";
+export const CHANGE_LIST_ROW_CLASS =
+  "grid grid-cols-[var(--change-list-marker-width,1.5rem)_minmax(0,1fr)_auto] items-start gap-x-3";
+
+const CHANGE_LIST_INTERACTIVE_ROW_CLASS =
+  "w-full rounded px-1 text-left transition-colors hover:bg-state-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export const WORKSPACE_CHANGES_LIST_MAX_ROWS = 200;
 
@@ -42,7 +48,10 @@ function WorkspaceChangesListItem({
 }: WorkspaceChangesListItemProps) {
   const rowContent = (
     <>
-      <span className="text-xs leading-5 text-muted-foreground opacity-70">
+      <span
+        className="justify-self-start text-xs leading-5 text-muted-foreground opacity-70"
+        title={describeWorkspaceFileStatus(file.status)}
+      >
         {formatWorkspaceFileStatus(file.status)}
       </span>
       <FilePathLink
@@ -64,15 +73,16 @@ function WorkspaceChangesListItem({
   );
 
   if (!onFileClick) {
-    return <div className={WORKSPACE_CHANGE_ROW_CLASS}>{rowContent}</div>;
+    return <div className={CHANGE_LIST_ROW_CLASS}>{rowContent}</div>;
   }
 
   return (
     <button
       type="button"
       className={cn(
-        WORKSPACE_CHANGE_ROW_CLASS,
-        "group w-full rounded px-1 text-left transition-colors hover:bg-state-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        CHANGE_LIST_ROW_CLASS,
+        CHANGE_LIST_INTERACTIVE_ROW_CLASS,
+        "group",
       )}
       aria-label={`Open ${file.path}`}
       onClick={() => onFileClick(file)}
